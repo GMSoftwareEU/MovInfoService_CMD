@@ -1,0 +1,170 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{6770F8AD-DC8A-4107-81AA-755226EEA53A}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>MovInfoService_CMD</RootNamespace>
+    <AssemblyName>MovInfoService_CMD</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="MQTTnet, Version=4.3.1.873, Culture=neutral, PublicKeyToken=fdb7629f2e364a63, processorArchitecture=MSIL">
+      <HintPath>..\packages\MQTTnet.4.3.1.873\lib\net461\MQTTnet.dll</HintPath>
+    </Reference>
+    <Reference Include="MQTTnet.Extensions.ManagedClient, Version=4.3.1.873, Culture=neutral, PublicKeyToken=fdb7629f2e364a63, processorArchitecture=MSIL">
+      <HintPath>..\packages\MQTTnet.Extensions.ManagedClient.4.3.1.873\lib\net461\MQTTnet.Extensions.ManagedClient.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CLASSI\BS\BusinessLogic.cs" />
+    <Compile Include="CLASSI\JSON_MODEL\AckRequest.cs" />
+    <Compile Include="CLASSI\JSON_MODEL\Error.cs" />
+    <Compile Include="CLASSI\JSON_MODEL\Request.cs" />
+    <Compile Include="CLASSI\JSON_MODEL\Response.cs" />
+    <Compile Include="CLASSI\MqttAdapterEX.cs" />
+    <Compile Include="DbOperation.cs" />
+    <Compile Include="MODEL\anag_macchine.cs" />
+    <Compile Include="MODEL\aree_macchine.cs" />
+    <Compile Include="MODEL\commesse_001.cs" />
+    <Compile Include="MODEL\cvm_pos_1_in.cs" />
+    <Compile Include="MODEL\cvm_pos_1_in_storico.cs" />
+    <Compile Include="MODEL\cvm_pos_1_out.cs" />
+    <Compile Include="MODEL\cvm_pos_1_park.cs" />
+    <Compile Include="MODEL\cvm_rfid_applicato.cs" />
+    <Compile Include="MODEL\cvm_rfid_posiz_uscita.cs" />
+    <Compile Include="MODEL\cvm_sez_todo_001.cs" />
+    <Compile Include="MODEL\C_cvm_sez_todo_001_old.cs" />
+    <Compile Include="MODEL\C_mov_Cdl_obsoleta.cs" />
+    <Compile Include="MODEL\C_mov_LabelParams_obsoleta.cs" />
+    <Compile Include="MODEL\C_mov_UDCProduced_obsoleta.cs" />
+    <Compile Include="MODEL\C_mov_UDCSingulDetail_obsoleta.cs" />
+    <Compile Include="MODEL\C__OLD_cvm_sez_todo_001_vista.cs" />
+    <Compile Include="MODEL\InfoService_vw_Destinazione.cs" />
+    <Compile Include="MODEL\ItaltonContext.cs" />
+    <Compile Include="MODEL\logaut_errori.cs" />
+    <Compile Include="MODEL\logaut_listediprelievo.cs" />
+    <Compile Include="MODEL\logaut_movimenti.cs" />
+    <Compile Include="MODEL\logaut_udciningresso_storico.cs" />
+    <Compile Include="MODEL\logaut_udcinuscita_storico.cs" />
+    <Compile Include="MODEL\MachineParameters.cs" />
+    <Compile Include="MODEL\mac_consumi_001.cs" />
+    <Compile Include="MODEL\mac_consumi_001_view.cs" />
+    <Compile Include="MODEL\mac_eventi_001_view.cs" />
+    <Compile Include="MODEL\mac_manut_disp.cs" />
+    <Compile Include="MODEL\mac_manut_storico.cs" />
+    <Compile Include="MODEL\mac_produzioni.cs" />
+    <Compile Include="MODEL\mac_sottotipo_evento.cs" />
+    <Compile Include="MODEL\mac_tipo_evento.cs" />
+    <Compile Include="MODEL\mat_prima_pos_1_in.cs" />
+    <Compile Include="MODEL\mat_prima_pos_1_out.cs" />
+    <Compile Include="MODEL\mat_prima_pos_2_in.cs" />
+    <Compile Include="MODEL\mat_prima_pos_2_out.cs" />
+    <Compile Include="MODEL\mat_prima_pos_3_in.cs" />
+    <Compile Include="MODEL\mat_prima_pos_3_out.cs" />
+    <Compile Include="MODEL\mov_DestinationStatus.cs" />
+    <Compile Include="MODEL\mov_DestinazionGroupCapacity.cs" />
+    <Compile Include="MODEL\mov_Label.cs" />
+    <Compile Include="MODEL\mov_LabelType.cs" />
+    <Compile Include="MODEL\mov_PhaseMaterials.cs" />
+    <Compile Include="MODEL\mov_Phases.cs" />
+    <Compile Include="MODEL\mov_ProductionOrders.cs" />
+    <Compile Include="MODEL\mov_Status.cs" />
+    <Compile Include="MODEL\mov_Tracking_udc.cs" />
+    <Compile Include="MODEL\mov_UDCDetail.cs" />
+    <Compile Include="MODEL\mov_UDCMagDetail.cs" />
+    <Compile Include="MODEL\mov_UDCQtyChangeEvents.cs" />
+    <Compile Include="MODEL\mov_UDCRequest.cs" />
+    <Compile Include="MODEL\ola_log.cs" />
+    <Compile Include="MODEL\ola_messages.cs" />
+    <Compile Include="MODEL\par_tbldefaultparameters_calandra.cs" />
+    <Compile Include="MODEL\par_tbldefaultparameters_levigatrice.cs" />
+    <Compile Include="MODEL\par_tbldefaultrecipes_levigatrice.cs" />
+    <Compile Include="MODEL\par_tblparameterscode.cs" />
+    <Compile Include="MODEL\par_tblproject.cs" />
+    <Compile Include="MODEL\par_tblprojectdefaultparameters.cs" />
+    <Compile Include="MODEL\rfid_global.cs" />
+    <Compile Include="MODEL\rfid_global_error.cs" />
+    <Compile Include="MODEL\stato_ordini_001.cs" />
+    <Compile Include="MODEL\stato_ordini_001_StatusChange.cs" />
+    <Compile Include="MODEL\tblbasketnextjob.cs" />
+    <Compile Include="MODEL\tblchangedsettings.cs" />
+    <Compile Include="MODEL\tblelectric.cs" />
+    <Compile Include="MODEL\tblevents.cs" />
+    <Compile Include="MODEL\tblevents_statusChanged.cs" />
+    <Compile Include="MODEL\tblparameters.cs" />
+    <Compile Include="MODEL\tblprioritycover.cs" />
+    <Compile Include="MODEL\tblpriorityhoney.cs" />
+    <Compile Include="MODEL\tblprioritylath.cs" />
+    <Compile Include="MODEL\tbltodo.cs" />
+    <Compile Include="MODEL\tbltodo_storico.cs" />
+    <Compile Include="MODEL\tbludcexit.cs" />
+    <Compile Include="MODEL\tbludcproduce.cs" />
+    <Compile Include="MODEL\tb_LabelPrinterSpooler.cs" />
+    <Compile Include="MODEL\vw_cvm_sez_todo_001.cs" />
+    <Compile Include="MODEL\vw_LabelData.cs" />
+    <Compile Include="MODEL\vw_mac_consumi_001_WIP.cs" />
+    <Compile Include="MODEL\vw_mov_cdl.cs" />
+    <Compile Include="MODEL\vw_mov_DestinationCode.cs" />
+    <Compile Include="MODEL\vw_mov_DestinationPrinter.cs" />
+    <Compile Include="MODEL\vw_mov_destinationstatus.cs" />
+    <Compile Include="MODEL\vw_mov_DestinazionGroupCapacity.cs" />
+    <Compile Include="MODEL\vw_mov_destinaziongroupdestinationstatus.cs" />
+    <Compile Include="MODEL\vw_mov_status.cs" />
+    <Compile Include="MODEL\vw_mov_UDCDetailDestinazionGroup.cs" />
+    <Compile Include="MODEL\vw_mov_UDCMagDetail.cs" />
+    <Compile Include="MODEL\vw_mov_UDCQuantity.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
