@@ -13,6 +13,70 @@ namespace MovInfoService.CLASSI.NGTEC.BS
 {
     public static class BusinessLogic
     {
+
+        /// <summary>Esegue una chiamata di Tipo 0
+        /// </summary>
+        /// <param name="req">messaggio di richiesta</param>
+        /// <returns></returns>
+        public static (string json, bool fl_PrintLabel, bool error) ExecRequest0(Request req)
+        {
+            string json = "";
+            var err = new Error();
+            DbOperation dbo = new DbOperation();
+            using (var db = new ItaltonContext())
+            {
+                var MovUDCDet = db.vw_mov_UDCDetailDestinazionGroup.Where(z => z.trackingcode == req.ContenutoPila.TrackingCode && (z.flprocessed == null || z.flprocessed == false)).OrderBy(z => z.IdDettUDC).FirstOrDefault();
+                if (MovUDCDet != null)
+                {
+                    var Destination = MovUDCDet.Destination;
+                    if (Destination == "IMBA") // se la destinazione è Imballo Automatico e questo non è funzionante forzo su imballo manuale
+                    {
+                        var DestCode = db.vw_mov_Destinationstatus.FirstOrDefault(x => x.DestinationCode == Destination)?.DestinationCode;
+                        if (DestCode != "1")
+                        {
+                            Destination = "IMBM";
+                        }
+                    }
+
+                    var resp = new Response();
+                    resp.IdResponse = 0;
+                    resp.IdMissione = req.IdMissione;
+                    resp.TipoIncarico = 4;                      //carico + scarico
+                    resp.DestCarico = null;
+                    resp.DestScarico = null;
+                    resp.CDLOrigine = req.PosizioneAttuale;
+                    resp.CDLDestinazione = Destination;
+                    resp.OrdineDiLav = MovUDCDet.ErpOrderCode;
+                    resp.ErpOrderId = MovUDCDet.ErpOrderId;
+                    resp.NumPezzi = MovUDCDet.Qty;
+                    resp.Larghezza = MovUDCDet.PanelWidth;
+                    resp.Lunghezza = MovUDCDet.PanelLength;
+                    resp.SpessorePezzo = MovUDCDet.PanelThickness;
+                    resp.Peso = null;
+                    resp.UDC = MovUDCDet.UDCCode;
+                    resp.RFID = MovUDCDet.rfidApplicato;
+                    resp.TrackingCode = req.ContenutoPila.TrackingCode;
+                    resp.PalletQty = MovUDCDet.Qty;                                             
+                    resp.ErpCodicePallet = MovUDCDet.ErpCodicePallet;
+                    resp.Transfer = false;
+                    resp.Errore = null;
+
+                    //Eseguo storeprocedure mov_sp_check_udcDetail_flSing
+                    dbo.Exec_mov_sp_check_udcDetail_flSing(resp.TrackingCode);
+
+                    //serializzo e restituisco la risposta
+                    json = JsonConvert.SerializeObject(resp);
+                    return (json, false, false);
+                }
+                err = new Error();
+                err.Messaggio = "ERRORE: in base alle informazioni ricevute non è possibile  determinare e garantire la corretta movimentazione della pila";
+                err.Bloccante = true;
+                json = JsonConvert.SerializeObject(err);
+                return (json, false, true);
+            }
+        }
+
+
         /// <summary>Esegue una chiamata di Tipo 1
         /// </summary>
         /// <param name="req">messaggio di richiesta</param>
@@ -122,99 +186,10 @@ namespace MovInfoService.CLASSI.NGTEC.BS
             }
         }
 
-        /// <summary>Crea la riposta standard per una chiamata di Tipo1
-        /// </summary>
-        /// <param name="trackingCode">chiave di ricerca della prima pila non gestita</param>
-        /// <param name="machine"> indica il centro di lavoro (macchinario) di provenienza</param>
-        /// <returns></returns>
-        private static (string json,bool fl_PrintLabel) StandardResponse1(string trackingCode, string machine, int idMissione, bool FL_Nav1AFull = false)  
-        {
-            string json = "";
-            using (var db = new ItaltonContext())
-            {
-                var MovUDCDet = db.vw_mov_UDCDetailDestinazionGroup.FirstOrDefault(z => z.trackingcode == trackingCode);
-                if (MovUDCDet != null)
-                {
-                    if (MovUDCDet.Destination == "CSM")
-                    {
-                        //Rispondo con scarico a magazzino e relativa stampa etichetta
-                        var resp = new Response();
-                        resp.IdResponse = 1;
-                        resp.IdMissione = idMissione;
-                        if (!FL_Nav1AFull)
-                            resp.TipoIncarico = 4;                      //carico + scarico
-                        else
-                            resp.TipoIncarico = 3;
-                        resp.DestCarico = "1C";
-                        resp.DestScarico = "CSM";
-                        resp.CDLOrigine = null;
-                        resp.CDLDestinazione = null;
-                        resp.OrdineDiLav = MovUDCDet.ErpOrderCode;                       
-                        resp.ErpOrderId = MovUDCDet.ErpOrderId;
-                        resp.NumPezzi = MovUDCDet.Qty;
-                        resp.Larghezza = MovUDCDet.PanelWidth;
-                        resp.Lunghezza = MovUDCDet.PanelLength;
-                        resp.SpessorePezzo = MovUDCDet.PanelThickness;
-                        resp.Peso = null;                                                  // TODO: X SIMONE => dove lo rimedio?
-                        resp.UDC = MovUDCDet.UDCCode;
-                        resp.RFID = MovUDCDet.rfidApplicato;
-                        resp.TrackingCode = trackingCode;
-                        resp.PalletQty = MovUDCDet.Qty;                                  // In questo caso metto uguale a num pezzi perchè siamo in fondo alla rulliera 1C             
-                        resp.ErpCodicePallet = MovUDCDet.ErpCodicePallet;
-                        resp.Transfer = false;
-                        resp.Errore = null;
-                        json = JsonConvert.SerializeObject(resp);
-                        return (json, true);
-                    }
-                    //else if (MovUDCDet.Destination == "1C")
-                    else
-                    {
-                        var movPhases = GetRemainingPhases((int)MovUDCDet.ErpOrderId, machine);
-                        var resp = new Response();
-                        //Controllo che tutti i CDL previsti dalle fasi siano attivi
-                        var check = CheckCDL(movPhases, MovUDCDet.IdDettUDC, MovUDCDet.trackingcode);
-                        if (check.error)
-                        {
-                            return (check.json, check.fl_PrintLabel);
-                        }
-                        //rispondo con la prima fase (destinazione) da eseguire
-                        resp.IdResponse = 1;
-                        resp.IdMissione = idMissione;
-                        if (!FL_Nav1AFull)
-                            resp.TipoIncarico = 4;                      //carico + scarico
-                        else
-                            resp.TipoIncarico = 3;
-                        resp.DestCarico = "1C";
-                        resp.DestScarico = movPhases[0].Machine;
-                        resp.CDLOrigine = null;
-                        resp.CDLDestinazione = null;
-                        resp.OrdineDiLav = MovUDCDet.ErpOrderCode;                                             
-                        resp.ErpOrderId = MovUDCDet.ErpOrderId;
-                        resp.NumPezzi = MovUDCDet.Qty;
-                        resp.Larghezza = MovUDCDet.PanelWidth;
-                        resp.Lunghezza = MovUDCDet.PanelLength;
-                        resp.SpessorePezzo = MovUDCDet.PanelThickness;
-                        resp.Peso = null;                                                  // TODO: X SIMONE => dove lo rimedio?
-                        resp.UDC = MovUDCDet.UDCCode;
-                        resp.RFID = MovUDCDet.rfidApplicato;
-                        resp.TrackingCode = MovUDCDet.trackingcode;
-                        resp.PalletQty = MovUDCDet.Qty;                                    // In questo caso metto uguale a num pezzi perchè siamo in fondo alla rulliera 1C            
-                        resp.ErpCodicePallet = MovUDCDet.ErpCodicePallet;
-                        resp.Transfer = false;
-                        resp.Errore = null;
-                        json = JsonConvert.SerializeObject(resp);
-                        return (json, false);
-                    }
-                }
-                return (null, false);
-            }
-            
-        }
-
 
         /// <summary>Esegue una chiamata di Tipo 2
         /// </summary>
-        /// <param name="req">messaggio di richiesta di Tipo 2</param>
+        /// <param name="req">messaggio di richiesta</param>
         /// <returns></returns>
         public static (string json, bool fl_PrintLabel, bool error) ExecRequest2(Request req)
         {
@@ -251,11 +226,11 @@ namespace MovInfoService.CLASSI.NGTEC.BS
                         resp.Larghezza = MagDetail.PanelWidth;
                         resp.Lunghezza = MagDetail.PanelLength;
                         resp.SpessorePezzo = MagDetail.PanelThickness;
-                        resp.Peso = null;                                                            // TODO: X SIMONE => dove lo rimedio?
+                        resp.Peso = null;                                                            
                         resp.UDC = MagDetail.UDCCode;
                         resp.RFID = null;
                         resp.TrackingCode = MagDetail.trackingcode;
-                        resp.PalletQty = MagDetail.Qty;                                               // In questo caso metto uguale a num pezzi perchè siamo in fondo alla rulliera 1C                               
+                        resp.PalletQty = MagDetail.Qty;                    // In questo caso metto uguale a num pezzi perchè siamo in fondo alla rulliera 1C                               
                         resp.ErpCodicePallet = MagDetail.ErpCodicePallet;
                         resp.Transfer = false;
                         resp.Errore = null;
@@ -279,8 +254,14 @@ namespace MovInfoService.CLASSI.NGTEC.BS
             
         }
 
+
+        /// <summary>Esegue una chiamata di Tipo 4
+        /// </summary>
+        /// <param name="req">messaggio di richiesta</param>
+        /// <returns></returns>
         public static (string json, bool fl_PrintLabel, bool error) ExecRequest4(Request req)
         {
+            DbOperation dbo = new DbOperation();
             var err = new Error();
             string json = "";
             var resp = new Response();
@@ -308,6 +289,10 @@ namespace MovInfoService.CLASSI.NGTEC.BS
                 resp.Transfer = false;
                 resp.Errore = null;
 
+                //Eseguo storeprocedure mov_sp_insert_mov_tracking_udc
+                dbo.Exec_mov_sp_insert_mov_tracking_udc(resp.TrackingCode, 1, resp.CDLOrigine, (int)resp.ErpOrderId, null, null, (int)resp.NumPezzi);
+
+                //serializzo e restituisco la risposta
                 json = JsonConvert.SerializeObject(resp);
                 return (json, false, false);
             }
@@ -338,6 +323,10 @@ namespace MovInfoService.CLASSI.NGTEC.BS
                     resp.Transfer = false;
                     resp.Errore = null;
 
+                    //Eseguo storeprocedure mov_sp_insert_mov_tracking_udc
+                    dbo.Exec_mov_sp_insert_mov_tracking_udc(resp.TrackingCode, 1, resp.CDLOrigine, (int)resp.ErpOrderId, null, null, (int)resp.NumPezzi);
+                    
+                    //serializzo e restituisco la risposta
                     json = JsonConvert.SerializeObject(resp);
                     return (json, false, false);
                 }
@@ -351,6 +340,99 @@ namespace MovInfoService.CLASSI.NGTEC.BS
             }
             
         }
+
+
+        /// <summary>Crea la riposta standard per una chiamata di Tipo1
+        /// </summary>
+        /// <param name="trackingCode">chiave di ricerca della prima pila non gestita</param>
+        /// <param name="machine"> indica il centro di lavoro (macchinario) di provenienza</param>
+        /// <returns></returns>
+        private static (string json, bool fl_PrintLabel) StandardResponse1(string trackingCode, string machine, int idMissione, bool FL_Nav1AFull = false)
+        {
+            string json = "";
+            using (var db = new ItaltonContext())
+            {
+                var MovUDCDet = db.vw_mov_UDCDetailDestinazionGroup.FirstOrDefault(z => z.trackingcode == trackingCode);
+                if (MovUDCDet != null)
+                {
+                    if (MovUDCDet.Destination == "CSM")
+                    {
+                        //Rispondo con scarico a magazzino e relativa stampa etichetta
+                        var resp = new Response();
+                        resp.IdResponse = 1;
+                        resp.IdMissione = idMissione;
+                        if (!FL_Nav1AFull)
+                            resp.TipoIncarico = 4;                      //carico + scarico
+                        else
+                            resp.TipoIncarico = 3;
+                        resp.DestCarico = "1C";
+                        resp.DestScarico = "CSM";
+                        resp.CDLOrigine = null;
+                        resp.CDLDestinazione = null;
+                        resp.OrdineDiLav = MovUDCDet.ErpOrderCode;
+                        resp.ErpOrderId = MovUDCDet.ErpOrderId;
+                        resp.NumPezzi = MovUDCDet.Qty;
+                        resp.Larghezza = MovUDCDet.PanelWidth;
+                        resp.Lunghezza = MovUDCDet.PanelLength;
+                        resp.SpessorePezzo = MovUDCDet.PanelThickness;
+                        resp.Peso = null;
+                        resp.UDC = MovUDCDet.UDCCode;
+                        resp.RFID = MovUDCDet.rfidApplicato;
+                        resp.TrackingCode = trackingCode;
+                        resp.PalletQty = MovUDCDet.Qty;                                  // In questo caso metto uguale a num pezzi perchè siamo in fondo alla rulliera 1C             
+                        resp.ErpCodicePallet = MovUDCDet.ErpCodicePallet;
+                        resp.Transfer = false;
+                        resp.Errore = null;
+                        json = JsonConvert.SerializeObject(resp);
+                        return (json, true);
+                    }
+                    //else if (MovUDCDet.Destination == "1C")
+                    else
+                    {
+                        var movPhases = GetRemainingPhases((int)MovUDCDet.ErpOrderId, machine);
+                        var resp = new Response();
+                        //Controllo che tutti i CDL previsti dalle fasi siano attivi
+                        var check = CheckCDL(movPhases, MovUDCDet.IdDettUDC, MovUDCDet.trackingcode);
+                        if (check.error)
+                        {
+                            return (check.json, check.fl_PrintLabel);
+                        }
+                        //rispondo con la prima fase (destinazione) da eseguire
+                        resp.IdResponse = 1;
+                        resp.IdMissione = idMissione;
+                        if (!FL_Nav1AFull)
+                            resp.TipoIncarico = 4;                      //carico + scarico
+                        else
+                            resp.TipoIncarico = 3;
+                        resp.DestCarico = "1C";
+                        resp.DestScarico = movPhases[0].Machine;
+                        resp.CDLOrigine = null;
+                        resp.CDLDestinazione = null;
+                        resp.OrdineDiLav = MovUDCDet.ErpOrderCode;
+                        resp.ErpOrderId = MovUDCDet.ErpOrderId;
+                        resp.NumPezzi = MovUDCDet.Qty;
+                        resp.Larghezza = MovUDCDet.PanelWidth;
+                        resp.Lunghezza = MovUDCDet.PanelLength;
+                        resp.SpessorePezzo = MovUDCDet.PanelThickness;
+                        resp.Peso = null;
+                        resp.UDC = MovUDCDet.UDCCode;
+                        resp.RFID = MovUDCDet.rfidApplicato;
+                        resp.TrackingCode = MovUDCDet.trackingcode;
+                        resp.PalletQty = MovUDCDet.Qty;                                    // In questo caso metto uguale a num pezzi perchè siamo in fondo alla rulliera 1C            
+                        resp.ErpCodicePallet = MovUDCDet.ErpCodicePallet;
+                        resp.Transfer = false;
+                        resp.Errore = null;
+                        json = JsonConvert.SerializeObject(resp);
+                        return (json, false);
+                    }
+                }
+                return (null, false);
+            }
+
+        }
+
+
+
 
         /// <summary>Crea elenco delle fasi che devono ancora essere eseguite
         /// </summary>

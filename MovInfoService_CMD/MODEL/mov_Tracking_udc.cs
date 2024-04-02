@@ -35,5 +35,8 @@ namespace MovInfoService_CMD.MODEL
         public bool? apertura { get; set; }
 
         public int? ErpRigaPianoCaricoID { get; set; }
+
+        public bool? FlAckReceived { get; set; }
+        
     }
 }

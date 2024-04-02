@@ -91,7 +91,11 @@ namespace MovInfoService_CMD
                         if (rootReq != null)
                         {
                             var request = rootReq.request;
-                            if (request.IdRequest == 1) // CHIAMATA DI TIPO 1
+                            if (request.IdRequest == 0) // CHIAMATA DI TIPO 0
+                            {
+                                res = BusinessLogic.ExecRequest0(request);
+                            }
+                            else if (request.IdRequest == 1) // CHIAMATA DI TIPO 1
                             {
                                 res = BusinessLogic.ExecRequest1(request);
                             }
@@ -152,6 +156,10 @@ namespace MovInfoService_CMD
                             if (ackReq.TipoMessaggio.ToUpper() == "TIPO1" || ackReq.TipoMessaggio.ToUpper() == "TIPO2")
                             {
                                 dbo.Exec_mov_sp_check_udcDetail(ackReq.TrackingCode);  //eseguo store procedure mov_sp_check_udcDetail per contrassegnare il record di mov_UDCDetail come processato
+                            }
+                            if (ackReq.TipoMessaggio.ToUpper() == "TIPO4")
+                            {
+                                dbo.Exec_mov_sp_check_AckReceived(ackReq.TrackingCode);  //eseguo store procedure mov_sp_check_udcDetail per contrassegnare il record di mov_UDCDetail come processato
                             }
                         }
                     }
