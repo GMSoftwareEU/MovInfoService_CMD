@@ -86,48 +86,52 @@ namespace MovInfoService_CMD
                             Console.WriteLine($"Errore deserializzazione JSON Request. Errore: {ex.Message}");
                             rootReq = null;
                         }
+                        
+                        (string json, bool fl_PrintLabel, bool error) res = ("",false,false);
                         if (rootReq != null)
                         {
                             var request = rootReq.request;
                             if (request.IdRequest == 1) // CHIAMATA DI TIPO 1
                             {
-                                var res = BusinessLogic.ExecRequest1(request);
-                                if (res.error)
+                                res = BusinessLogic.ExecRequest1(request);
+                            }
+                            else if (request.IdRequest == 2)   //CHIAMATA DI TIPO 2
+                            {
+                                res = BusinessLogic.ExecRequest2(request);
+                            }
+                            else if (request.IdRequest == 4)   //CHIAMATA DI TIPO 4
+                            {
+                                res = BusinessLogic.ExecRequest4(request);
+                            }
+
+
+
+                            if (res.error)
+                            {
+                                mqtt.SendTopic(mqttClient, "Error", res.json);
+                            }
+                            else
+                            {
+                                if (!String.IsNullOrEmpty(res.json))
                                 {
-                                    mqtt.SendTopic(mqttClient, "Error", res.json);
-                                }
-                                else
-                                {
-                                    if (!String.IsNullOrEmpty(res.json))
+                                    mqtt.SendTopic(mqttClient, "Response", res.json);
+                                    if (res.fl_PrintLabel)
                                     {
-                                        mqtt.SendTopic(mqttClient, "Response1", res.json);
-                                        if (res.fl_PrintLabel)
+                                        string param = "1";
+                                        string printer = "xx";  // leggere da vista [vw_mov_Destinaziongroupdestinationstatus] il campo PrinterName fitrata per DestinationCode
+                                        var result = dbo.Exec_sp_LabelPrinterRequest(param, printer);
+                                        if (result.Item2 != "")
                                         {
-                                            //string param = "1";
-                                            //string printer = "xx";
-                                            //var result = dbo.Exec_sp_LabelPrinterRequest(param, printer);
-                                            //if (result.Item2 != "")
-                                            //{
-                                            //    Error err = new Error();
-                                            //    err.Messaggio = result.Item2;
-                                            //    err.Bloccante = true;
-                                            //    jsonText = JsonConvert.SerializeObject(err);
-                                            //    mqtt.SendTopic(mqttClient, "Error", jsonText);
-                                            //}
+                                            Error err = new Error();
+                                            err.Messaggio = result.Item2;
+                                            err.Bloccante = true;
+                                            jsonText = JsonConvert.SerializeObject(err);
+                                            mqtt.SendTopic(mqttClient, "Error", jsonText);
                                         }
                                     }
                                 }
                             }
-                            else if (request.IdRequest == 2)   //CHIAMATA DI TIPO 2
-                            {
-                                var res = BusinessLogic.ExecRequest2(request);
-                            }
-                            else if (request.IdRequest == 4)   //CHIAMATA DI TIPO 4
-                            {
-                                var res = BusinessLogic.ExecRequest4(request);
-                            }
                         }
-
                     }
 
                     else if (topic == topicPrefix + @"\AckRequest")
@@ -145,19 +149,9 @@ namespace MovInfoService_CMD
                         if (req != null)
                         {
                             var ackReq = req.ack_request;
-                            if (ackReq.TipoMessaggio.ToUpper() == "TIPO1")
+                            if (ackReq.TipoMessaggio.ToUpper() == "TIPO1" || ackReq.TipoMessaggio.ToUpper() == "TIPO2")
                             {
                                 dbo.Exec_mov_sp_check_udcDetail(ackReq.TrackingCode);  //eseguo store procedure mov_sp_check_udcDetail per contrassegnare il record di mov_UDCDetail come processato
-                            }
-
-                            else if (ackReq.TipoMessaggio.ToUpper() == "TIPO2")
-                            {
-                                if (ackReq.Ack.ToUpper() == "OK")
-                                {
-                                    ////Imposto come eseguito il rigo di mov_UDCMagDetail relativo al mio TrackingCode
-                                    ////se sono su ultimo dettaglio imposta anche come eseguito il rigo di mov_UDCDetail
-                                    dbo.Exec_mov_sp_check_udcMagDetail(ackReq.TrackingCode);
-                                }
                             }
                         }
                     }

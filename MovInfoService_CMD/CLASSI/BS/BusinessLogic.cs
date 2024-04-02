@@ -30,14 +30,10 @@ namespace MovInfoService.CLASSI.NGTEC.BS
                 using (var db = new ItaltonContext())
                 {
                     var err = new Error();
-                    //ricavo ErpOrderId della pila presente nella rulliera  tramite il TrackingCode
-                    var OrderID = db.mov_UDCDetail.FirstOrDefault(z => z.trackingcode.ToUpper().Trim() == req.ContenutoPila.TrackingCode.ToUpper().Trim()).ErpOrderId;
-                    //ricavo Destinazione della pila presente nella rulliera  tramite il TrackingCode
-                    var DestReq = db.mov_UDCDetail.FirstOrDefault(z => z.trackingcode.ToUpper().Trim() == req.ContenutoPila.TrackingCode.ToUpper().Trim()).Destination;
-
-
+                    
                     //estraggo la prima pila tra quelle non gestite con destinazione RULLIERA 1C
                     var MovUDCDet = db.vw_mov_UDCDetailDestinazionGroup.Where(z => (z.flprocessed == null || z.flprocessed == false) && (z.DestinazionGroupCode == "GRP_RULLIERA1C")).OrderBy(z => z.IdDettUDC).FirstOrDefault();
+
                     if (MovUDCDet != null)
                     {
                         //1) verifico se il TrackingCode corrisponde a quello del messaggio di richiesta 
@@ -77,6 +73,8 @@ namespace MovInfoService.CLASSI.NGTEC.BS
                             return (json, false, false);
                         }
                         //3) se 1) e 2) sono false, verifico che Destinazione = CSM
+                        //ricavo Destinazione della pila presente nella rulliera  tramite il TrackingCode
+                        var DestReq = db.mov_UDCDetail.FirstOrDefault(z => z.trackingcode.ToUpper().Trim() == req.ContenutoPila.TrackingCode.ToUpper().Trim()).Destination;
                         if (DestReq == "CSM")
                         {
                             //Rispondo con scarico a magazzino e relativa stampa etichetta
@@ -106,6 +104,9 @@ namespace MovInfoService.CLASSI.NGTEC.BS
                             return (json, true, false);
                         }
                         //4) se 1), 2) e 3) sono false verifico se appartengono allo stesso orderID
+                        //ricavo ErpOrderId della pila presente nella rulliera  tramite il TrackingCode
+                        var OrderID = db.mov_UDCDetail.FirstOrDefault(z => z.trackingcode.ToUpper().Trim() == req.ContenutoPila.TrackingCode.ToUpper().Trim()).ErpOrderId;
+                        
                         if (MovUDCDet.ErpOrderId == OrderID)
                         {
                             var res = StandardResponse1(req.ContenutoPila.TrackingCode, req.PosizioneAttuale, req.IdMissione);
@@ -131,8 +132,7 @@ namespace MovInfoService.CLASSI.NGTEC.BS
             string json = "";
             using (var db = new ItaltonContext())
             {
-                //var MovUDCDet = db.mov_UDCDetail.FirstOrDefault(z => z.trackingcode == trackingCode);
-                var MovUDCDet = db.vw_mov_UDCDetailDestinazionGroup.FirstOrDefault(z => z.trackingcode == trackingCode && (z.flprocessed == null || z.flprocessed==false));
+                var MovUDCDet = db.vw_mov_UDCDetailDestinazionGroup.FirstOrDefault(z => z.trackingcode == trackingCode);
                 if (MovUDCDet != null)
                 {
                     if (MovUDCDet.Destination == "CSM")
@@ -149,7 +149,7 @@ namespace MovInfoService.CLASSI.NGTEC.BS
                         resp.DestScarico = "CSM";
                         resp.CDLOrigine = null;
                         resp.CDLDestinazione = null;
-                        resp.OrdineDiLav = null;                                             // TODO: X SIMONE => dove lo rimedio?
+                        resp.OrdineDiLav = MovUDCDet.ErpOrderCode;                       
                         resp.ErpOrderId = MovUDCDet.ErpOrderId;
                         resp.NumPezzi = MovUDCDet.Qty;
                         resp.Larghezza = MovUDCDet.PanelWidth;
@@ -159,7 +159,7 @@ namespace MovInfoService.CLASSI.NGTEC.BS
                         resp.UDC = MovUDCDet.UDCCode;
                         resp.RFID = MovUDCDet.rfidApplicato;
                         resp.TrackingCode = trackingCode;
-                        resp.PalletQty = MovUDCDet.StackQty;                                 // TODO: X SIMONE => è corretto?
+                        resp.PalletQty = MovUDCDet.Qty;                                  // In questo caso metto uguale a num pezzi perchè siamo in fondo alla rulliera 1C             
                         resp.ErpCodicePallet = MovUDCDet.ErpCodicePallet;
                         resp.Transfer = false;
                         resp.Errore = null;
@@ -169,15 +169,7 @@ namespace MovInfoService.CLASSI.NGTEC.BS
                     //else if (MovUDCDet.Destination == "1C")
                     else
                     {
-                        // Ricavo l'ordine della mia fase attuale in modo da restituire la prima fase successiva 
-                        int myPhaseOrder = 0;
-                        var myPhase = db.mov_Phases.FirstOrDefault(z => z.ErpId == MovUDCDet.ErpOrderId && z.Machine == machine);
-                        if (myPhase != null)
-                        {
-                            myPhaseOrder = (int)myPhase.PhaseOrder;
-                        }
-                        var movPhases = db.mov_Phases.Where(z => z.ErpId == MovUDCDet.ErpOrderId && z.PhaseOrder>myPhaseOrder).OrderBy(z => z.PhaseOrder).ToList();
-                        
+                        var movPhases = GetRemainingPhases((int)MovUDCDet.ErpOrderId, machine);
                         var resp = new Response();
                         //Controllo che tutti i CDL previsti dalle fasi siano attivi
                         var check = CheckCDL(movPhases, MovUDCDet.IdDettUDC, MovUDCDet.trackingcode);
@@ -196,7 +188,7 @@ namespace MovInfoService.CLASSI.NGTEC.BS
                         resp.DestScarico = movPhases[0].Machine;
                         resp.CDLOrigine = null;
                         resp.CDLDestinazione = null;
-                        resp.OrdineDiLav = null;                                             // TODO: X SIMONE => dove lo rimedio?
+                        resp.OrdineDiLav = MovUDCDet.ErpOrderCode;                                             
                         resp.ErpOrderId = MovUDCDet.ErpOrderId;
                         resp.NumPezzi = MovUDCDet.Qty;
                         resp.Larghezza = MovUDCDet.PanelWidth;
@@ -206,7 +198,7 @@ namespace MovInfoService.CLASSI.NGTEC.BS
                         resp.UDC = MovUDCDet.UDCCode;
                         resp.RFID = MovUDCDet.rfidApplicato;
                         resp.TrackingCode = MovUDCDet.trackingcode;
-                        resp.PalletQty = MovUDCDet.StackQty;                                 // TODO: X SIMONE => è corretto?
+                        resp.PalletQty = MovUDCDet.Qty;                                    // In questo caso metto uguale a num pezzi perchè siamo in fondo alla rulliera 1C            
                         resp.ErpCodicePallet = MovUDCDet.ErpCodicePallet;
                         resp.Transfer = false;
                         resp.Errore = null;
@@ -237,60 +229,38 @@ namespace MovInfoService.CLASSI.NGTEC.BS
                     var MagDetail = db.vw_mov_UDCMagDetail.FirstOrDefault();
                     if (MagDetail != null)
                     {
-                        //estraggo la prima pila tra quelle non gestite di mov_UDCDetail
-                        var MovUDCDet = db.vw_mov_UDCDetailDestinazionGroup.Where(z => (z.flprocessed == null || z.flprocessed == false) && (z.DestinazionGroupCode == "GRP_RULLIERA1C")).OrderBy(z => z.IdDettUDC).FirstOrDefault();
-                        // verifico che il record di mov_UDCMagDetail sia conforme con il primo disponibile di mov_UDCDetail
-                        if (MagDetail.ErpOrderId == MovUDCDet.ErpOrderId && MagDetail.ItemCode.Trim() == MovUDCDet.ItemCode.Trim())
-                        {
-                            // Ricavo l'ordine della mia fase attuale in modo da restituire la prima fase successiva 
-                            int myPhaseOrder = 0;
-                            var myPhase = db.mov_Phases.FirstOrDefault(z => z.ErpId == MagDetail.ErpOrderId && z.Machine == MagDetail.Origin);
-                            //var myPhase = db.mov_Phases.Where(z => z.ErpId == MagDetail.ErpOrderId).OrderBy(x => x.PhaseOrder).FirstOrDefault();
-                            if (myPhase != null)
-                            {
-                                myPhaseOrder = (int)myPhase.PhaseOrder;
-                            }
-                            var movPhases = db.mov_Phases.Where(z => z.ErpId == MovUDCDet.ErpOrderId && z.PhaseOrder > myPhaseOrder).OrderBy(z => z.PhaseOrder).ToList();
+                        var movPhases = GetRemainingPhases((int)MagDetail.ErpOrderId, MagDetail.Origin);
 
-                            //Controllo che tutti i CDL previsti dalle fasi siano attivi
-                            var check = CheckCDL(movPhases, MagDetail.UDCMagDetailId, MagDetail.trackingcode);
-                            if (check.error)
-                            {
-                                return (check.json, check.fl_PrintLabel, check.error);
-                            }
-                            var resp = new Response();
-                            resp.IdResponse = 2;
-                            resp.IdMissione = req.IdMissione;
-                            resp.TipoIncarico = 4;                      //carico + scarico
-                            resp.DestCarico = MagDetail.Origin;
-                            resp.DestScarico = MovUDCDet.Destination;
-                            resp.CDLOrigine = null;
-                            resp.CDLDestinazione = null;
-                            resp.OrdineDiLav = null;                                             // TODO: X SIMONE => dove lo rimedio?
-                            resp.ErpOrderId = MagDetail.ErpOrderId;
-                            resp.NumPezzi = MagDetail.Qty;
-                            resp.Larghezza = MovUDCDet.PanelWidth;
-                            resp.Lunghezza = MovUDCDet.PanelLength;
-                            resp.SpessorePezzo = MovUDCDet.PanelThickness;
-                            resp.Peso = null;                                                  // TODO: X SIMONE => dove lo rimedio?
-                            resp.UDC = MagDetail.UDCCode;
-                            resp.RFID = MovUDCDet.rfidApplicato;
-                            resp.TrackingCode = MagDetail.trackingcode;
-                            resp.PalletQty = MovUDCDet.StackQty;                                 // TODO: X SIMONE => è corretto?
-                            resp.ErpCodicePallet = MovUDCDet.ErpCodicePallet;
-                            resp.Transfer = false;
-                            resp.Errore = null;
-                            json = JsonConvert.SerializeObject(resp);
-                            return (json, false,false);
-                        }
-                        else
+                        //Controllo che tutti i CDL previsti dalle fasi siano attivi
+                        var check = CheckCDL(movPhases, MagDetail.UDCMagDetailId, MagDetail.trackingcode);
+                        if (check.error)
                         {
-                            err = new Error();
-                            err.Messaggio = "ERRORE: in base alle informazioni ricevute non è possibile  determinare e garantire la corretta movimentazione della pila";
-                            err.Bloccante = true;
-                            json = JsonConvert.SerializeObject(err);
-                            return (json, false,true);
+                            return (check.json, check.fl_PrintLabel, check.error);
                         }
+                        var resp = new Response();
+                        resp.IdResponse = 2;
+                        resp.IdMissione = req.IdMissione;
+                        resp.TipoIncarico = 4;                      //carico + scarico
+                        resp.DestCarico = MagDetail.Origin;
+                        resp.DestScarico = MagDetail.Destination;
+                        resp.CDLOrigine = null;
+                        resp.CDLDestinazione = null;
+                        resp.OrdineDiLav = MagDetail.ErpOrderCode;                                            
+                        resp.ErpOrderId = MagDetail.ErpOrderId;
+                        resp.NumPezzi = MagDetail.Qty;
+                        resp.Larghezza = MagDetail.PanelWidth;
+                        resp.Lunghezza = MagDetail.PanelLength;
+                        resp.SpessorePezzo = MagDetail.PanelThickness;
+                        resp.Peso = null;                                                            // TODO: X SIMONE => dove lo rimedio?
+                        resp.UDC = MagDetail.UDCCode;
+                        resp.RFID = null;
+                        resp.TrackingCode = MagDetail.trackingcode;
+                        resp.PalletQty = MagDetail.Qty;                                               // In questo caso metto uguale a num pezzi perchè siamo in fondo alla rulliera 1C                               
+                        resp.ErpCodicePallet = MagDetail.ErpCodicePallet;
+                        resp.Transfer = false;
+                        resp.Errore = null;
+                        json = JsonConvert.SerializeObject(resp);
+                        return (json, false,false);
                     }
                     else
                     {
@@ -309,60 +279,122 @@ namespace MovInfoService.CLASSI.NGTEC.BS
             
         }
 
-        public static (string json, bool error) ExecRequest4(Request req)
+        public static (string json, bool fl_PrintLabel, bool error) ExecRequest4(Request req)
         {
             var err = new Error();
             string json = "";
-            using (var db = new ItaltonContext())
+            var resp = new Response();
+            if (req.IngressoUscita == "I")
             {
-                // Ricavo l'ordine della mia fase attuale in modo da restituire la prima fase successiva 
-                int myPhaseOrder = 0;
-                var myPhase = db.mov_Phases.FirstOrDefault(z => z.ErpId == req.ContenutoPila.ErpOrderId && z.Machine == req.PosizioneAttuale);
-                if (myPhase != null)
+                resp.IdResponse = 4;
+                resp.IdMissione = req.IdMissione;
+                resp.TipoIncarico = 4;   // sentire con fabio cosa gli devo passare in ingresso                                               
+                resp.DestCarico = null;
+                resp.DestScarico = null;
+                resp.CDLOrigine = req.PosizioneAttuale;
+                resp.CDLDestinazione = req.PosizioneAttuale;
+                resp.OrdineDiLav = null;                                           
+                resp.ErpOrderId = req.ContenutoPila.ErpOrderId;
+                resp.NumPezzi = req.ContenutoPila.NumPezzi;
+                resp.Larghezza = null;     
+                resp.Lunghezza = null;     
+                resp.SpessorePezzo = null; 
+                resp.Peso = null;   
+                resp.UDC = null;
+                resp.RFID = null;
+                resp.TrackingCode = req.ContenutoPila.TrackingCode;
+                resp.PalletQty = GetQty4Pallet(req.ContenutoPila.ErpOrderId, req.PosizioneAttuale, req.ContenutoPila.NumPezzi);                                             
+                resp.ErpCodicePallet = null; 
+                resp.Transfer = false;
+                resp.Errore = null;
+
+                json = JsonConvert.SerializeObject(resp);
+                return (json, false, false);
+            }
+            else
+            {
+                var movPhase = GetNextPhase(req.ContenutoPila.ErpOrderId, req.PosizioneAttuale);
+                if (movPhase != null)
                 {
-                    myPhaseOrder = (int)myPhase.PhaseOrder;
-                }
-                var movPhases = db.mov_Phases.Where(z => z.ErpId == req.ContenutoPila.ErpOrderId && z.PhaseOrder > myPhaseOrder).OrderBy(z => z.PhaseOrder).FirstOrDefault();
-                if (movPhases != null)
-                {
-                    //rispondo con la prima fase (destinazione) da eseguire
-                    var resp = new Response();
                     resp.IdResponse = 4;
                     resp.IdMissione = req.IdMissione;
-                    resp.TipoIncarico = 4;                                                //carico + scarico
+                    resp.TipoIncarico = 4;   
                     resp.DestCarico = null;
                     resp.DestScarico = null;
                     resp.CDLOrigine = req.PosizioneAttuale;
-                    resp.CDLDestinazione = movPhases.Machine;
-                    resp.OrdineDiLav = null;                                             // TODO: X SIMONE => dove lo rimedio?
-                    resp.ErpOrderId = movPhases.ErpId;
+                    resp.CDLDestinazione = movPhase.Machine;
+                    resp.OrdineDiLav = null;  
+                    resp.ErpOrderId = req.ContenutoPila.ErpOrderId;
                     resp.NumPezzi = req.ContenutoPila.NumPezzi;
-                    resp.Larghezza = null;
-                    resp.Lunghezza = null;
-                    resp.SpessorePezzo = null;
-                    resp.Peso = null;                                                  // TODO: X SIMONE => dove lo rimedio?
+                    resp.Larghezza = null;     
+                    resp.Lunghezza = null;     
+                    resp.SpessorePezzo = null; 
+                    resp.Peso = null;   
                     resp.UDC = null;
                     resp.RFID = null;
                     resp.TrackingCode = req.ContenutoPila.TrackingCode;
-                    resp.PalletQty = null;                                             
-                    resp.ErpCodicePallet = null;
+                    resp.PalletQty = req.ContenutoPila.NumPezzi;
+                    resp.ErpCodicePallet = null; 
                     resp.Transfer = false;
                     resp.Errore = null;
 
                     json = JsonConvert.SerializeObject(resp);
-                    return (json, false);
+                    return (json, false, false);
                 }
                 else
                 {
                     err.Messaggio = "ERRORE: Centro di lavoro di destinazione non trovato ";
                     err.Bloccante = true;
                     json = JsonConvert.SerializeObject(err);
-                    return (json, true);
+                    return (json, false, true);
                 }
             }
+            
         }
 
+        /// <summary>Crea elenco delle fasi che devono ancora essere eseguite
+        /// </summary>
+        /// <param name="ErpId">Codice Ordine ErpId</param>
+        /// <param name="Machine">Codice macchina relativo alla fase attuale</param>
+        /// <returns></returns>
+        private static List<mov_Phases> GetRemainingPhases(int ErpId, string Machine)
+        {
+            List<mov_Phases> res = null;
+            //Ricavo l'ordine della mia fase attuale
+            int myPhaseOrder = 0;
+            using (var db = new ItaltonContext())
+            {
+                var myPhase = db.mov_Phases.FirstOrDefault(z => z.ErpId == ErpId && z.Machine == Machine);
+                if (myPhase != null)
+                {
+                    myPhaseOrder = (int)myPhase.PhaseOrder;
+                }
+                //Ricavo elenco delle fasi da eseguire ancora
+                res = db.mov_Phases.Where(z => z.ErpId == ErpId && z.PhaseOrder > myPhaseOrder).OrderBy(z => z.PhaseOrder).ToList();
+            }
+            return res;
+        }
 
+        /// <summary>Trova la prossima fase da eseguire
+        /// </summary>
+        /// <param name="ErpId">Codice Ordine ErpId</param>
+        /// <param name="Machine">Codice macchina relativo alla fase attuale</param>
+        /// <returns></returns>
+        private static mov_Phases GetNextPhase(int ErpId, string Machine)
+        {
+            var mov_Phases = GetRemainingPhases(ErpId, Machine);
+            if (mov_Phases.Count > 0)
+                return mov_Phases[0];
+            else
+                return null;
+        }
+
+        /// <summary>Verifica che i Centri di Lavoro successivi siano attivi e funzionanti
+        /// </summary>
+        /// <param name="movPhases">Elenco delle fasi da eseguire</param>
+        /// <param name="idMissione">IdMissione contenuto nella richiesta inviata al MIS</param>
+        /// <param name="TrackingCode">TrackingCode della pila</param>
+        /// <returns></returns>
         private static (string json, bool error, bool fl_PrintLabel) CheckCDL( List<mov_Phases> movPhases, int idMissione, string TrackingCode)
         {
             var resp = new Response();
@@ -386,17 +418,17 @@ namespace MovInfoService.CLASSI.NGTEC.BS
                                 resp.TipoIncarico = 3;                      
                                 resp.DestCarico = "1C";
                                 resp.DestScarico = "CSM";
-                                resp.OrdineDiLav = null;                                            // TODO: X SIMONE => dove lo rimedio?
+                                resp.OrdineDiLav = null;                                            
                                 resp.ErpOrderId = null;
                                 resp.NumPezzi = null;
                                 resp.Larghezza = null;
                                 resp.Lunghezza = null;
                                 resp.SpessorePezzo = null;
-                                resp.Peso = null;                                                    // TODO: X SIMONE => dove lo rimedio?
+                                resp.Peso = null;                                                    
                                 resp.UDC = null;
                                 resp.RFID = null;
                                 resp.TrackingCode = TrackingCode;
-                                resp.PalletQty = null;                                              // TODO: X SIMONE => è corretto?
+                                resp.PalletQty = null;                                              
                                 resp.ErpCodicePallet = null;
                                 resp.Transfer = false;
                                 resp.Errore = "Scarico forzato a magazzino causato da CDL " + DestStatus.DestinationCode + " fuori servizio";
@@ -426,6 +458,23 @@ namespace MovInfoService.CLASSI.NGTEC.BS
                 }
                 return ("", false,false);   // tutti i CDL sono attivi e funzionanati
             }
+        }
+
+
+        private static int GetQty4Pallet(int ErpId, string Machine, int NumPezzi)
+        {
+            int res = 0;
+            using (var db = new ItaltonContext())
+            {
+                var phase = db.mov_Phases.FirstOrDefault(z => z.ErpId == ErpId && z.Machine == Machine);
+                if (phase != null)
+                {
+                    res = (int)phase.Qty4Pallet;
+                }
+            }
+            if (res == 0)
+                res = NumPezzi;
+            return res;
         }
 
     }

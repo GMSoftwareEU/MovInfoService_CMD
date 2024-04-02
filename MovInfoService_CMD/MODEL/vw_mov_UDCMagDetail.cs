@@ -42,6 +42,9 @@ namespace MovInfoService_CMD.MODEL
         [StringLength(50)]
         public string ErpCodicePallet { get; set; }
 
+        [StringLength(19)]
+        public string ErpOrderCode { get; set; }
+
         public int? nfiller1 { get; set; }
 
         public int? nfiller2 { get; set; }
