@@ -25,7 +25,7 @@ namespace MovInfoService.CLASSI.NGTEC.BS
             DbOperation dbo = new DbOperation();
             using (var db = new ItaltonContext())
             {
-                var MovUDCDet = db.vw_mov_UDCDetailDestinazionGroup.Where(z => z.trackingcode == req.ContenutoPila.TrackingCode && (z.flprocessed == null || z.flprocessed == false)).OrderBy(z => z.IdDettUDC).FirstOrDefault();
+                var MovUDCDet = db.vw_mov_UDCDetailDestinationGroup.Where(z => z.trackingcode == req.ContenutoPila.TrackingCode && (z.flprocessed == null || z.flprocessed == false)).OrderBy(z => z.IdDettUDC).FirstOrDefault();
                 if (MovUDCDet != null)
                 {
                     var Destination = MovUDCDet.Destination;
@@ -96,7 +96,7 @@ namespace MovInfoService.CLASSI.NGTEC.BS
                     var err = new Error();
                     
                     //estraggo la prima pila tra quelle non gestite con destinazione RULLIERA 1C
-                    var MovUDCDet = db.vw_mov_UDCDetailDestinazionGroup.Where(z => (z.flprocessed == null || z.flprocessed == false) && (z.DestinazionGroupCode == "GRP_RULLIERA1C")).OrderBy(z => z.IdDettUDC).FirstOrDefault();
+                    var MovUDCDet = db.vw_mov_UDCDetailDestinationGroup.Where(z => (z.flprocessed == null || z.flprocessed == false) && (z.DestinationGroupCode == "GRP_RULLIERA1C")).OrderBy(z => z.IdDettUDC).FirstOrDefault();
 
                     if (MovUDCDet != null)
                     {
@@ -352,7 +352,7 @@ namespace MovInfoService.CLASSI.NGTEC.BS
             string json = "";
             using (var db = new ItaltonContext())
             {
-                var MovUDCDet = db.vw_mov_UDCDetailDestinazionGroup.FirstOrDefault(z => z.trackingcode == trackingCode);
+                var MovUDCDet = db.vw_mov_UDCDetailDestinationGroup.FirstOrDefault(z => z.trackingcode == trackingCode);
                 if (MovUDCDet != null)
                 {
                     if (MovUDCDet.Destination == "CSM")

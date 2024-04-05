@@ -6,10 +6,9 @@ namespace MovInfoService_CMD.MODEL
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    public partial class vw_mov_UDCDetailDestinazionGroup
+    public partial class mov_UDCDetail_todelete
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int IdDettUDC { get; set; }
 
         [StringLength(50)]
@@ -79,17 +78,5 @@ namespace MovInfoService_CMD.MODEL
         public DateTime? DtProcessingDateDestination { get; set; }
 
         public bool? flmagudcdetail { get; set; }
-
-        [StringLength(20)]
-        public string DestinazionGroupCode { get; set; }
-
-        [StringLength(5)]
-        public string DestinationCodeCVM { get; set; }
-
-        [StringLength(50)]
-        public string ErpCodicePallet { get; set; }
-
-        [StringLength(19)]
-        public string ErpOrderCode { get; set; }
     }
 }

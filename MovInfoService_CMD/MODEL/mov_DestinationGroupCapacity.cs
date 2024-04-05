@@ -6,33 +6,29 @@ namespace MovInfoService_CMD.MODEL
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    public partial class vw_mov_DestinazionGroupCapacity
+    public partial class mov_DestinationGroupCapacity
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public mov_DestinationGroupCapacity()
+        {
+            mov_DestinationStatus = new HashSet<mov_DestinationStatus>();
+        }
+
         [Key]
-        [Column(Order = 0)]
         [StringLength(20)]
         public string codice { get; set; }
 
-        [Key]
-        [Column(Order = 1)]
+        [Required]
         [StringLength(50)]
         public string descrizione { get; set; }
 
-        [Key]
-        [Column(Order = 2)]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int SlotMassimi { get; set; }
 
-        [Key]
-        [Column(Order = 3)]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int SlotOccupati { get; set; }
 
-        [Key]
-        [Column(Order = 4)]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int SlotLivelloSaturazione { get; set; }
 
-        public int? SlotDisponibili { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<mov_DestinationStatus> mov_DestinationStatus { get; set; }
     }
 }

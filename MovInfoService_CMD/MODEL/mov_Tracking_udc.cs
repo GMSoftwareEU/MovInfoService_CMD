@@ -37,6 +37,5 @@ namespace MovInfoService_CMD.MODEL
         public int? ErpRigaPianoCaricoID { get; set; }
 
         public bool? FlAckReceived { get; set; }
-        
     }
 }

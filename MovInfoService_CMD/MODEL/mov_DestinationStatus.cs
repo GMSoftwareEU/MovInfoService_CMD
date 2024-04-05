@@ -28,7 +28,7 @@ namespace MovInfoService_CMD.MODEL
         public string PrinterName { get; set; }
 
         [StringLength(20)]
-        public string DestinazionGroupCapacity { get; set; }
+        public string DestinationGroupCapacity { get; set; }
 
         [StringLength(20)]
         public string PrinterNameAutomaticIn { get; set; }
@@ -44,6 +44,6 @@ namespace MovInfoService_CMD.MODEL
 
         public int? ErpLocationCVM { get; set; }
 
-        public virtual mov_DestinazionGroupCapacity mov_DestinazionGroupCapacity { get; set; }
+        public virtual mov_DestinationGroupCapacity mov_DestinationGroupCapacity { get; set; }
     }
 }

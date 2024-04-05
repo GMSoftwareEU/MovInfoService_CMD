@@ -6,7 +6,7 @@ namespace MovInfoService_CMD.MODEL
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    public partial class vw_mov_Destinaziongroupdestinationstatus
+    public partial class vw_mov_Destinationgroupdestinationstatus
     {
         [Key]
         [Column(Order = 0)]
@@ -21,7 +21,7 @@ namespace MovInfoService_CMD.MODEL
         [Key]
         [Column(Order = 2)]
         [StringLength(20)]
-        public string DestinazionGroupCode { get; set; }
+        public string DestinationGroupCode { get; set; }
 
         [StringLength(5)]
         public string DestinationCodeCVM { get; set; }
