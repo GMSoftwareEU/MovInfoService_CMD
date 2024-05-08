@@ -103,6 +103,10 @@ namespace MovInfoService_CMD
                             {
                                 res = BusinessLogic.ExecRequest2(request);
                             }
+                            else if (request.IdRequest == 3)   //CHIAMATA DI TIPO 3
+                            {
+                                res = BusinessLogic.ExecRequest3(request);
+                            }
                             else if (request.IdRequest == 4)   //CHIAMATA DI TIPO 4
                             {
                                 res = BusinessLogic.ExecRequest4(request);
@@ -157,9 +161,9 @@ namespace MovInfoService_CMD
                             {
                                 dbo.Exec_mov_sp_check_udcDetail(ackReq.TrackingCode);  //eseguo store procedure mov_sp_check_udcDetail per contrassegnare il record di mov_UDCDetail come processato
                             }
-                            if (ackReq.TipoMessaggio.ToUpper() == "TIPO4")
+                            if (ackReq.TipoMessaggio.ToUpper() == "TIPO3" || ackReq.TipoMessaggio.ToUpper() == "TIPO4")
                             {
-                                dbo.Exec_mov_sp_check_AckReceived(ackReq.TrackingCode);  //eseguo store procedure mov_sp_check_udcDetail per contrassegnare il record di mov_UDCDetail come processato
+                                dbo.Exec_mov_sp_check_AckReceived(ackReq.TrackingCode);  //eseguo store procedure mov_sp_check_AckReceived 
                             }
                         }
                     }

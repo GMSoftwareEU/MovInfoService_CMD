@@ -25,9 +25,9 @@ namespace MovInfoService_CMD.MODEL
         [StringLength(50)]
         public string Key_General { get; set; }
 
-        public int? Colonna_applicazione { get; set; }
-
         public int? Riga_applicazione { get; set; }
+
+        public int? Colonna_applicazione { get; set; }
 
         public int? Qty { get; set; }
 

@@ -6,31 +6,30 @@ namespace MovInfoService_CMD.MODEL
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    public partial class mov_Tracking_log
+    public partial class vw_mov_DestinationPackaging
     {
-        public int id { get; set; }
-
         [StringLength(50)]
-        public string Key_General { get; set; }
-
-        public int? Riga { get; set; }
-
-        public int? Colonna { get; set; }
+        public string UDCCode { get; set; }
 
         [StringLength(17)]
         public string trackingcode { get; set; }
 
+        [Key]
+        [Column(TypeName = "numeric")]
+        public decimal UnitWeight { get; set; }
+
         [StringLength(10)]
         public string Destination { get; set; }
 
-        public DateTime? DtInsertDate { get; set; }
+        public int? Qty { get; set; }
 
-        public DateTime? DtProcessingDate { get; set; }
-
-        [StringLength(50)]
-        public string UDCCode { get; set; }
+        public int? StackQty { get; set; }
 
         [StringLength(50)]
-        public string CallerPosition { get; set; }
+        public string ItemCode { get; set; }
+
+        public int? ErpOrderId { get; set; }
+
+        public int? ErpRigaPianoCaricoID { get; set; }
     }
 }

@@ -69,6 +69,7 @@
     <Compile Include="CLASSI\JSON_MODEL\Response.cs" />
     <Compile Include="CLASSI\MqttAdapterEX.cs" />
     <Compile Include="DbOperation.cs" />
+    <Compile Include="MODEL\anag_articoli.cs" />
     <Compile Include="MODEL\anag_macchine.cs" />
     <Compile Include="MODEL\aree_macchine.cs" />
     <Compile Include="MODEL\commesse_001.cs" />
@@ -117,10 +118,9 @@
     <Compile Include="MODEL\mov_tracking_log.cs" />
     <Compile Include="MODEL\mov_Tracking_udc.cs" />
     <Compile Include="MODEL\mov_UDCDetail.cs" />
-    <Compile Include="MODEL\mov_UDCDetail_todelete.cs" />
+    <Compile Include="MODEL\mov_UDCLoadLocationRequest.cs" />
     <Compile Include="MODEL\mov_UDCMagDetail.cs" />
     <Compile Include="MODEL\mov_UDCQtyChangeEvents.cs" />
-    <Compile Include="MODEL\mov_UDCRequest.cs" />
     <Compile Include="MODEL\ola_log.cs" />
     <Compile Include="MODEL\ola_messages.cs" />
     <Compile Include="MODEL\par_tbldefaultparameters_calandra.cs" />
@@ -154,13 +154,18 @@
     <Compile Include="MODEL\vw_mov_DestinationCode.cs" />
     <Compile Include="MODEL\vw_mov_DestinationGroupCapacity.cs" />
     <Compile Include="MODEL\vw_mov_Destinationgroupdestinationstatus.cs" />
+    <Compile Include="MODEL\vw_mov_DestinationPackaging.cs" />
     <Compile Include="MODEL\vw_mov_DestinationPrinter.cs" />
     <Compile Include="MODEL\vw_mov_Destinationstatus.cs" />
+    <Compile Include="MODEL\vw_mov_SlotOccupati.cs" />
+    <Compile Include="MODEL\vw_mov_SlotOccupatiDettaglio.cs" />
     <Compile Include="MODEL\vw_mov_status.cs" />
     <Compile Include="MODEL\vw_mov_UDCDetailDestinationGroup.cs" />
-    <Compile Include="MODEL\vw_mov_UDCDetailDestinazionGroup_todelete.cs" />
     <Compile Include="MODEL\vw_mov_UDCMagDetail.cs" />
     <Compile Include="MODEL\vw_mov_UDCQuantity.cs" />
+    <Compile Include="MODEL\vw_ProduzioniCalandra.cs" />
+    <Compile Include="MODEL\vw_ProduzioniLevigatrice.cs" />
+    <Compile Include="MODEL\vw_ProduzioniSezionatrice1.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -9,6 +9,7 @@ namespace MovInfoService_CMD.MODEL
     public partial class vw_mov_UDCDetailDestinationGroup
     {
         [Key]
+        [Column(Order = 0)]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int IdDettUDC { get; set; }
 
@@ -26,9 +27,9 @@ namespace MovInfoService_CMD.MODEL
         [StringLength(50)]
         public string Key_General { get; set; }
 
-        public int? Colonna_applicazione { get; set; }
-
         public int? Riga_applicazione { get; set; }
+
+        public int? Colonna_applicazione { get; set; }
 
         public int? Qty { get; set; }
 
@@ -91,5 +92,9 @@ namespace MovInfoService_CMD.MODEL
 
         [StringLength(19)]
         public string ErpOrderCode { get; set; }
+
+        [Key]
+        [Column(Order = 1, TypeName = "numeric")]
+        public decimal PesoUnitario { get; set; }
     }
 }

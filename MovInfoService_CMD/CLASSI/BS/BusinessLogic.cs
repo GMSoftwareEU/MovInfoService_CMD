@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MovInfoService.CLASSI.NGTEC.BS
@@ -23,6 +24,8 @@ namespace MovInfoService.CLASSI.NGTEC.BS
             string json = "";
             var err = new Error();
             DbOperation dbo = new DbOperation();
+            //Eseguo storeprocedure mov_sp_check_udcDetail_flSing
+            dbo.Exec_mov_sp_check_udcDetail_flSing(req.ContenutoPila.TrackingCode);
             using (var db = new ItaltonContext())
             {
                 var MovUDCDet = db.vw_mov_UDCDetailDestinationGroup.Where(z => z.trackingcode == req.ContenutoPila.TrackingCode && (z.flprocessed == null || z.flprocessed == false)).OrderBy(z => z.IdDettUDC).FirstOrDefault();
@@ -31,7 +34,7 @@ namespace MovInfoService.CLASSI.NGTEC.BS
                     var Destination = MovUDCDet.Destination;
                     if (Destination == "IMBA") // se la destinazione è Imballo Automatico e questo non è funzionante forzo su imballo manuale
                     {
-                        var DestCode = db.vw_mov_Destinationstatus.FirstOrDefault(x => x.DestinationCode == Destination)?.DestinationCode;
+                        var DestCode = db.vw_mov_Destinationstatus.FirstOrDefault(x => x.DestinationCode == Destination)?.StatusCode;
                         if (DestCode != "1")
                         {
                             Destination = "IMBM";
@@ -61,8 +64,7 @@ namespace MovInfoService.CLASSI.NGTEC.BS
                     resp.Transfer = false;
                     resp.Errore = null;
 
-                    //Eseguo storeprocedure mov_sp_check_udcDetail_flSing
-                    dbo.Exec_mov_sp_check_udcDetail_flSing(resp.TrackingCode);
+
 
                     //serializzo e restituisco la risposta
                     json = JsonConvert.SerializeObject(resp);
@@ -201,46 +203,49 @@ namespace MovInfoService.CLASSI.NGTEC.BS
                 {
                     //estraggo la prima pila tra quelle non gestite di mov_UDCMagDetail
                     //var MagDetail = db.mov_UDCMagDetail.Where(z => (z.DtProcessingDate == null)).FirstOrDefault();
-                    var MagDetail = db.vw_mov_UDCMagDetail.FirstOrDefault();
-                    if (MagDetail != null)
-                    {
-                        var movPhases = GetRemainingPhases((int)MagDetail.ErpOrderId, MagDetail.Origin);
 
-                        //Controllo che tutti i CDL previsti dalle fasi siano attivi
-                        var check = CheckCDL(movPhases, MagDetail.UDCMagDetailId, MagDetail.trackingcode);
-                        if (check.error)
-                        {
-                            return (check.json, check.fl_PrintLabel, check.error);
-                        }
-                        var resp = new Response();
-                        resp.IdResponse = 2;
-                        resp.IdMissione = req.IdMissione;
-                        resp.TipoIncarico = 4;                      //carico + scarico
-                        resp.DestCarico = MagDetail.Origin;
-                        resp.DestScarico = MagDetail.Destination;
-                        resp.CDLOrigine = null;
-                        resp.CDLDestinazione = null;
-                        resp.OrdineDiLav = MagDetail.ErpOrderCode;                                            
-                        resp.ErpOrderId = MagDetail.ErpOrderId;
-                        resp.NumPezzi = MagDetail.Qty;
-                        resp.Larghezza = MagDetail.PanelWidth;
-                        resp.Lunghezza = MagDetail.PanelLength;
-                        resp.SpessorePezzo = MagDetail.PanelThickness;
-                        resp.Peso = null;                                                            
-                        resp.UDC = MagDetail.UDCCode;
-                        resp.RFID = null;
-                        resp.TrackingCode = MagDetail.trackingcode;
-                        resp.PalletQty = MagDetail.Qty;                    // In questo caso metto uguale a num pezzi perchè siamo in fondo alla rulliera 1C                               
-                        resp.ErpCodicePallet = MagDetail.ErpCodicePallet;
-                        resp.Transfer = false;
-                        resp.Errore = null;
-                        json = JsonConvert.SerializeObject(resp);
-                        return (json, false,false);
-                    }
-                    else
+                    vw_mov_UDCMagDetail MagDetail = null;
+                    while (MagDetail == null)
                     {
-                        return ("", false,false);
+                        MagDetail = db.vw_mov_UDCMagDetail.FirstOrDefault();
+                        if (MagDetail != null)
+                        {
+                            var movPhases = GetRemainingPhases((int)MagDetail.ErpOrderId, MagDetail.Origin);
+
+                            //Controllo che tutti i CDL previsti dalle fasi siano attivi
+                            var check = CheckCDL(movPhases, MagDetail.UDCMagDetailId, MagDetail.trackingcode);
+                            if (check.error)
+                            {
+                                return (check.json, check.fl_PrintLabel, check.error);
+                            }
+                            var resp = new Response();
+                            resp.IdResponse = 2;
+                            resp.IdMissione = req.IdMissione;
+                            resp.TipoIncarico = 4;                      //carico + scarico
+                            resp.DestCarico = MagDetail.Origin;
+                            resp.DestScarico = MagDetail.Destination;
+                            resp.CDLOrigine = null;
+                            resp.CDLDestinazione = null;
+                            resp.OrdineDiLav = MagDetail.ErpOrderCode;
+                            resp.ErpOrderId = MagDetail.ErpOrderId;
+                            resp.NumPezzi = MagDetail.Qty;
+                            resp.Larghezza = MagDetail.PanelWidth;
+                            resp.Lunghezza = MagDetail.PanelLength;
+                            resp.SpessorePezzo = MagDetail.PanelThickness;
+                            resp.Peso = null;
+                            resp.UDC = MagDetail.UDCCode;
+                            resp.RFID = null;
+                            resp.TrackingCode = MagDetail.trackingcode;
+                            resp.PalletQty = MagDetail.Qty;                    // In questo caso metto uguale a num pezzi perchè siamo in fondo alla rulliera 1C                               
+                            resp.ErpCodicePallet = MagDetail.ErpCodicePallet;
+                            resp.Transfer = false;
+                            resp.Errore = null;
+                            json = JsonConvert.SerializeObject(resp);
+                            return (json, false, false);
+                        }
+                        Thread.Sleep(1000);
                     }
+                    return ("", false, false);
                 }
             }
             else
@@ -252,6 +257,116 @@ namespace MovInfoService.CLASSI.NGTEC.BS
                 return (json, false, true);
             }
             
+        }
+
+        /// <summary>Esegue una chiamata di Tipo 3
+        /// </summary>
+        /// <param name="req">messaggio di richiesta</param>
+        /// <returns></returns>
+        public static (string json, bool fl_PrintLabel, bool error) ExecRequest3(Request req)
+        {
+            DbOperation dbo = new DbOperation();
+            var err = new Error();
+            string json = "";
+            var resp = new Response();
+            using (var db = new ItaltonContext())
+            {
+                var destPacking = db.vw_mov_DestinationPackaging.FirstOrDefault(z => z.trackingcode == req.ContenutoPila.TrackingCode);
+                if (destPacking != null)
+                {
+                    if (req.IngressoUscita == "I")
+                    {
+                        resp.IdResponse = 3;
+                        resp.IdMissione = req.IdMissione;
+                        resp.TipoIncarico = 4;   // sentire con fabio cosa gli devo passare in ingresso                                               
+                        resp.DestCarico = null;
+                        resp.DestScarico = null;
+                        resp.CDLOrigine = req.PosizioneAttuale;
+                        resp.CDLDestinazione = destPacking.Destination;
+                        resp.OrdineDiLav = null;
+                        resp.ErpOrderId = req.ContenutoPila.ErpOrderId;
+                        resp.NumPezzi = destPacking.Qty;
+                        resp.Larghezza = null;
+                        resp.Lunghezza = null;
+                        resp.SpessorePezzo = null;
+                        resp.Peso = destPacking.UnitWeight;
+                        resp.UDC = destPacking.UDCCode;
+                        resp.RFID = null;
+                        resp.TrackingCode = req.ContenutoPila.TrackingCode;
+                        resp.PalletQty = destPacking.Qty;
+                        resp.PalletQty = null;
+                        resp.StackQty = destPacking.StackQty;
+                        resp.ErpCodicePallet = null;
+                        resp.Transfer = false;
+                        resp.Errore = null;
+
+                        //Eseguo storeprocedure mov_sp_insert_mov_tracking_udc
+                        int ErpId;
+                        if (req.ContenutoPila.ErpOrderId != null)
+                            ErpId = (int)req.ContenutoPila.ErpOrderId;
+                        else
+                        {
+                            if (destPacking.ErpRigaPianoCaricoID != null)
+                                ErpId = (int)destPacking.ErpRigaPianoCaricoID * (-1);
+                            else
+                                ErpId = 0;
+                        }
+                        dbo.Exec_mov_sp_insert_mov_tracking_udc(resp.TrackingCode, 1, resp.CDLDestinazione, ErpId, null, null, (int)resp.NumPezzi);
+
+                        //serializzo e restituisco la risposta
+                        json = JsonConvert.SerializeObject(resp);
+                        return (json, false, false);
+                    }
+                    else
+                    {
+                        resp.IdResponse = 4;
+                        resp.IdMissione = req.IdMissione;
+                        resp.TipoIncarico = 4;
+                        resp.DestCarico = null;
+                        resp.DestScarico = null;
+                        resp.CDLOrigine = req.PosizioneAttuale;
+                        resp.CDLDestinazione = "MAG";
+                        resp.OrdineDiLav = null;
+                        resp.ErpOrderId = req.ContenutoPila.ErpOrderId;
+                        resp.NumPezzi = req.ContenutoPila.NumPezzi;
+                        resp.Larghezza = null;
+                        resp.Lunghezza = null;
+                        resp.SpessorePezzo = null;
+                        resp.Peso = null;
+                        resp.UDC = null;
+                        resp.RFID = null;
+                        resp.TrackingCode = req.ContenutoPila.TrackingCode;
+                        resp.PalletQty = req.ContenutoPila.NumPezzi;
+                        resp.ErpCodicePallet = null;
+                        resp.Transfer = false;
+                        resp.Errore = null;
+
+                        ////Eseguo storeprocedure mov_sp_insert_mov_tracking_udc
+                        //dbo.Exec_mov_sp_insert_mov_tracking_udc(resp.TrackingCode, 1, resp.CDLDestinazione, (int)resp.ErpOrderId, null, null, (int)resp.NumPezzi);
+
+                        //Eseguo storeprocedure mov_sp_insert_mov_tracking_udc
+                        int ErpId;
+                        if (req.ContenutoPila.ErpOrderId != null)
+                            ErpId = (int)req.ContenutoPila.ErpOrderId;
+                        else
+                        {
+                            if (destPacking.ErpRigaPianoCaricoID != null)
+                                ErpId = (int)destPacking.ErpRigaPianoCaricoID * (-1);
+                            else
+                                ErpId = 0;
+                        }
+                        dbo.Exec_mov_sp_insert_mov_tracking_udc(resp.TrackingCode, 1, resp.CDLDestinazione, ErpId, null, null, (int)resp.NumPezzi);
+
+                        //serializzo e restituisco la risposta
+                        json = JsonConvert.SerializeObject(resp);
+                        return (json, false, false);
+                    }
+                }
+                else
+                {
+                    return ("", false, true);
+                }
+            }
         }
 
 
@@ -430,7 +545,6 @@ namespace MovInfoService.CLASSI.NGTEC.BS
             }
 
         }
-
 
 
 

@@ -50,5 +50,10 @@ namespace MovInfoService_CMD.MODEL
 
         [Column(TypeName = "numeric")]
         public decimal? ItemCodeThickness { get; set; }
+
+        [Column(TypeName = "numeric")]
+        public decimal? PesoUnitario { get; set; }
+
+        public bool attivo { get; set; }
     }
 }

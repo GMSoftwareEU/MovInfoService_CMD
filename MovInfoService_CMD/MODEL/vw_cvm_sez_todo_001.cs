@@ -105,11 +105,72 @@ namespace MovInfoService_CMD.MODEL
         public int? iDestFaseSucc_2_5 { get; set; }
 
         [Key]
+        [Column(Order = 0)]
         public float rPanelThickness { get; set; }
 
         public int? StackQty { get; set; }
 
         [StringLength(8)]
         public string ID_Ola_Master { get; set; }
+
+        public int? iCodProd_Pos_1_1 { get; set; }
+
+        public int? iCodProd_Pos_1_2 { get; set; }
+
+        public int? iCodProd_Pos_1_3 { get; set; }
+
+        public int? iCodProd_Pos_1_4 { get; set; }
+
+        public int? iCodProd_Pos_1_5 { get; set; }
+
+        public int? iCodProd_Pos_2_1 { get; set; }
+
+        public int? iCodProd_Pos_2_2 { get; set; }
+
+        public int? iCodProd_Pos_2_3 { get; set; }
+
+        public int? iCodProd_Pos_2_4 { get; set; }
+
+        public int? iCodProd_Pos_2_5 { get; set; }
+
+        [Key]
+        [Column(Order = 1, TypeName = "numeric")]
+        public decimal PesoUnitario_1_1 { get; set; }
+
+        [Key]
+        [Column(Order = 2, TypeName = "numeric")]
+        public decimal PesoUnitario_1_2 { get; set; }
+
+        [Key]
+        [Column(Order = 3, TypeName = "numeric")]
+        public decimal PesoUnitario_1_3 { get; set; }
+
+        [Key]
+        [Column(Order = 4, TypeName = "numeric")]
+        public decimal PesoUnitario_1_4 { get; set; }
+
+        [Key]
+        [Column(Order = 5, TypeName = "numeric")]
+        public decimal PesoUnitario_1_5 { get; set; }
+
+        [Key]
+        [Column(Order = 6, TypeName = "numeric")]
+        public decimal PesoUnitario_2_1 { get; set; }
+
+        [Key]
+        [Column(Order = 7, TypeName = "numeric")]
+        public decimal PesoUnitario_2_2 { get; set; }
+
+        [Key]
+        [Column(Order = 8, TypeName = "numeric")]
+        public decimal PesoUnitario_2_3 { get; set; }
+
+        [Key]
+        [Column(Order = 9, TypeName = "numeric")]
+        public decimal PesoUnitario_2_4 { get; set; }
+
+        [Key]
+        [Column(Order = 10, TypeName = "numeric")]
+        public decimal PesoUnitario_2_5 { get; set; }
     }
 }

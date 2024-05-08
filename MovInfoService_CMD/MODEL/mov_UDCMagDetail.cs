@@ -35,8 +35,6 @@ namespace MovInfoService_CMD.MODEL
         [StringLength(17)]
         public string trackingcode { get; set; }
 
-        public DateTime? DtMISProcessingDate { get; set; }
-
         public int? IdDettUDC { get; set; }
 
         public bool flSendToImag { get; set; }

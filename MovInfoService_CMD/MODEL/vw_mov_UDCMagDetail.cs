@@ -9,6 +9,7 @@ namespace MovInfoService_CMD.MODEL
     public partial class vw_mov_UDCMagDetail
     {
         [Key]
+        [Column(Order = 0)]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int UDCMagDetailId { get; set; }
 
@@ -72,5 +73,9 @@ namespace MovInfoService_CMD.MODEL
 
         [Column(TypeName = "smalldatetime")]
         public DateTime? dfiller1 { get; set; }
+
+        [Key]
+        [Column(Order = 1, TypeName = "numeric")]
+        public decimal PesoUnitario { get; set; }
     }
 }

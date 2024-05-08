@@ -25,11 +25,12 @@ namespace MovInfoService_CMD.CLASSI.JSON_MODEL
         public float? Larghezza { get; set; }
         public float? Lunghezza { get; set; }
         public float? SpessorePezzo { get; set; }
-        public float? Peso { get; set; }
+        public decimal? Peso { get; set; }
         public string UDC { get; set; }
         public string RFID { get; set; }
         public string TrackingCode { get; set; }
         public int? PalletQty { get; set; }
+        public int? StackQty { get; set; }
         public string ErpCodicePallet { get; set; }
         public bool Transfer { get; set; }
         public object Errore { get; set; }

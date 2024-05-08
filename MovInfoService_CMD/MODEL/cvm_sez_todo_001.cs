@@ -103,5 +103,25 @@ namespace MovInfoService_CMD.MODEL
         public DateTime dtInsertDate { get; set; }
 
         public int StackQty { get; set; }
+
+        public int? iCodProd_Pos_1_1 { get; set; }
+
+        public int? iCodProd_Pos_1_2 { get; set; }
+
+        public int? iCodProd_Pos_1_3 { get; set; }
+
+        public int? iCodProd_Pos_1_4 { get; set; }
+
+        public int? iCodProd_Pos_1_5 { get; set; }
+
+        public int? iCodProd_Pos_2_1 { get; set; }
+
+        public int? iCodProd_Pos_2_2 { get; set; }
+
+        public int? iCodProd_Pos_2_3 { get; set; }
+
+        public int? iCodProd_Pos_2_4 { get; set; }
+
+        public int? iCodProd_Pos_2_5 { get; set; }
     }
 }

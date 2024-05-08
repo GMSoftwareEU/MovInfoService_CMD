@@ -24,8 +24,6 @@ namespace MovInfoService_CMD.MODEL
 
         public int SlotMassimi { get; set; }
 
-        public int SlotOccupati { get; set; }
-
         public int SlotLivelloSaturazione { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

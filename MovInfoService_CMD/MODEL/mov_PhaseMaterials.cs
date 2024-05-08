@@ -39,5 +39,8 @@ namespace MovInfoService_CMD.MODEL
         public string MaterialItemCodeType { get; set; }
 
         public int? MaterialItemId { get; set; }
+
+        [Column(TypeName = "numeric")]
+        public decimal? PesoUnitario { get; set; }
     }
 }
