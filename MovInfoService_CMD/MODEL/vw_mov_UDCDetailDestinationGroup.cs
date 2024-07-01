@@ -81,6 +81,8 @@ namespace MovInfoService_CMD.MODEL
 
         public bool? flmagudcdetail { get; set; }
 
+        public int? IdDettUDCOrder { get; set; }
+
         [StringLength(20)]
         public string DestinationGroupCode { get; set; }
 
@@ -96,5 +98,10 @@ namespace MovInfoService_CMD.MODEL
         [Key]
         [Column(Order = 1, TypeName = "numeric")]
         public decimal PesoUnitario { get; set; }
+
+        [StringLength(20)]
+        public string LocationCodeR1C { get; set; }
+
+        public int? ManualExtractionId { get; set; }
     }
 }

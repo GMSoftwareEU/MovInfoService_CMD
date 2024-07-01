@@ -29,7 +29,7 @@ namespace MovInfoService_CMD.CLASSI.JSON_MODEL
         public string TrackingCode { get; set; }
         public int ErpOrderId { get; set; }
         public int NumPezzi { get; set; }
-        public long RFID { get; set; }
+        public string RFID { get; set; }
     }
 
     public class ContenutoPila

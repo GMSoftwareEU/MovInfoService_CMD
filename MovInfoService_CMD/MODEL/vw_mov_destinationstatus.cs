@@ -25,5 +25,8 @@ namespace MovInfoService_CMD.MODEL
 
         [StringLength(5)]
         public string DestinationCodeCVM { get; set; }
+
+        [StringLength(20)]
+        public string LocationCodeR1C { get; set; }
     }
 }

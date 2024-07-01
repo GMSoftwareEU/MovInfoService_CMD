@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MovInfoService_CMD.CLASSI
@@ -44,7 +45,7 @@ namespace MovInfoService_CMD.CLASSI
                         .WithTcpServer(brokerHostName, brokerPort) 
                         .WithCredentials(usernameMQTT, passwordMQTT)
                         .WithCleanSession()
-                        .WithKeepAlivePeriod(new TimeSpan(0, 0, 0, 5))
+                        .WithKeepAlivePeriod(new TimeSpan(0, 24, 0, 0))
                         .Build();
 
                     mqttClient.ConnectAsync(options).Wait();
@@ -91,13 +92,25 @@ namespace MovInfoService_CMD.CLASSI
                 {
                     ConnectToMQTTClient(mqttClient);
                 }
+                MqttApplicationMessage msg = new MqttApplicationMessage() { Retain = false, Topic = topicPrefix + "\\" + topic, Payload = Encoding.UTF8.GetBytes(message) };
+                mqttClient.PublishAsync(msg);
             }
-            catch
+            catch (Exception ex)
             {
-
+                Console.WriteLine("Send topic fallita. Errore: " + ex.Message);
             }
-            MqttApplicationMessage msg = new MqttApplicationMessage() { Retain = false, Topic = topicPrefix+"\\"+ topic, Payload = Encoding.UTF8.GetBytes(message) };
-            mqttClient.PublishAsync(msg);
+        }
+
+        public static async Task Ping_Server(IMqttClient mqttClient)
+        {
+            try
+            {
+                await mqttClient.PingAsync(CancellationToken.None);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Ping Server fallita. Errore: " + ex.Message);
+            }
         }
 
     }

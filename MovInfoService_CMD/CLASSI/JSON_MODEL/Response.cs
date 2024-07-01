@@ -34,6 +34,7 @@ namespace MovInfoService_CMD.CLASSI.JSON_MODEL
         public string ErpCodicePallet { get; set; }
         public bool Transfer { get; set; }
         public object Errore { get; set; }
+        //public string TipoImballo { get; set; }
     }
 
 

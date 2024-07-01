@@ -49,7 +49,7 @@ namespace MovInfoService_CMD
             }
         }
 
-        public void Exec_mov_sp_insert_mov_tracking_udc(string trackingCode, int operazione, string cdl, int erpId, string opt1, string opt2,int qta)
+        public void Exec_mov_sp_insert_mov_tracking_udc(string trackingCode, int operazione, string cdl, int? erpId, int? erpPianoCaricoId, int? manualExtractionId, string opt1, string opt2,int qta, string dest, string originalDest)
         {
             using (SqlConnection conn = new SqlConnection())
             {
@@ -68,13 +68,22 @@ namespace MovInfoService_CMD
                     cmd.Parameters["@CdlOrigine"].Direction = ParameterDirection.Input;
                     cmd.Parameters.AddWithValue("@ErpID", erpId);
                     cmd.Parameters["@ErpID"].Direction = ParameterDirection.Input;
+                    cmd.Parameters.AddWithValue("@ErpRigaPianoCaricoID", erpPianoCaricoId);
+                    cmd.Parameters["@ErpRigaPianoCaricoID"].Direction = ParameterDirection.Input;
+                    cmd.Parameters.AddWithValue("@ManualExtractionId", manualExtractionId);
+                    cmd.Parameters["@ManualExtractionId"].Direction = ParameterDirection.Input;
                     cmd.Parameters.AddWithValue("@option1", opt1);
                     cmd.Parameters["@option1"].Direction = ParameterDirection.Input;
                     cmd.Parameters.AddWithValue("@option2", opt2);
                     cmd.Parameters["@option2"].Direction = ParameterDirection.Input;
                     cmd.Parameters.AddWithValue("@Qta", qta);
                     cmd.Parameters["@Qta"].Direction = ParameterDirection.Input;
-                    cmd.Parameters.Add("@id", SqlDbType.Int);
+
+                    cmd.Parameters.AddWithValue("@Destination", dest);
+                    cmd.Parameters["@Destination"].Direction = ParameterDirection.Input;
+                    cmd.Parameters.AddWithValue("@OriginalDestination", originalDest);
+                    cmd.Parameters["@OriginalDestination"].Direction = ParameterDirection.Input;
+
                     //Parametri di output
                     cmd.Parameters.Add("@id", SqlDbType.Int);
                     cmd.Parameters["@id"].Direction = ParameterDirection.Output;
@@ -88,7 +97,7 @@ namespace MovInfoService_CMD
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine($"Errore esecuzione store procedure mov_sp_insert_mov_tracking_udc. Errore: {ex.Message}");
+                        Console.WriteLine($"Errore esecuzione store procedure mov_sp_insert_mov_tracking_udc.Tracking code {trackingCode}. Errore: {ex.Message}");
                     }
                     finally
                     {
@@ -187,9 +196,9 @@ namespace MovInfoService_CMD
                     cmd.Parameters["@PrinterName"].Direction = ParameterDirection.Input;
                     //Parametri di output
                     cmd.Parameters.Add("@idLabel", SqlDbType.Int);
-                    cmd.Parameters["@idLabel"].Direction = ParameterDirection.InputOutput;
+                    cmd.Parameters["@idLabel"].Direction = ParameterDirection.Output;
                     cmd.Parameters.Add("@errormsg", SqlDbType.VarChar, -1);
-                    cmd.Parameters["@errormsg"].Direction = ParameterDirection.InputOutput;
+                    cmd.Parameters["@errormsg"].Direction = ParameterDirection.Output;
                     try
                     {
                         conn.Open();

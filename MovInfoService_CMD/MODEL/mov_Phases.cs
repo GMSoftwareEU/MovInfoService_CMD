@@ -30,5 +30,8 @@ namespace MovInfoService_CMD.MODEL
         public string Machine { get; set; }
 
         public DateTime? dtInsertDate { get; set; }
+
+        [StringLength(20)]
+        public string TipoImballo { get; set; }
     }
 }

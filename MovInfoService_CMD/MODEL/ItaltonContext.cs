@@ -8,7 +8,7 @@ namespace MovInfoService_CMD.MODEL
     public partial class ItaltonContext : DbContext
     {
         public ItaltonContext()
-            : base("name=ItaltonContext1")
+            : base("name=ItaltonContext")
         {
         }
 

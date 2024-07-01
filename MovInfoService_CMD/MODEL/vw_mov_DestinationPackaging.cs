@@ -31,5 +31,7 @@ namespace MovInfoService_CMD.MODEL
         public int? ErpOrderId { get; set; }
 
         public int? ErpRigaPianoCaricoID { get; set; }
+
+        public int? ManualExtractionId { get; set; }
     }
 }
