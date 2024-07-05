@@ -6,21 +6,24 @@ namespace MovInfoService_CMD.MODEL
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    public partial class anag_articoli
+    public partial class vw_AnagArticoli
     {
         [Key]
+        [Column(Order = 0)]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int iCodProd { get; set; }
 
-        [Required]
+        [Key]
+        [Column(Order = 1)]
         [StringLength(50)]
         public string strCodProd { get; set; }
 
         [StringLength(100)]
         public string strDesProd { get; set; }
 
-        [Column(TypeName = "numeric")]
-        public decimal peso { get; set; }
+        [Key]
+        [Column(Order = 2, TypeName = "numeric")]
+        public decimal pesoUni { get; set; }
 
         [Column(TypeName = "numeric")]
         public decimal? lunghezza { get; set; }

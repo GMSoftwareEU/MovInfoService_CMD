@@ -60,6 +60,7 @@ namespace MovInfoService_CMD.MODEL
         public virtual DbSet<par_tbldefaultrecipes_levigatrice> par_tbldefaultrecipes_levigatrice { get; set; }
         public virtual DbSet<par_tblparameterscode> par_tblparameterscode { get; set; }
         public virtual DbSet<par_tblproject> par_tblproject { get; set; }
+        public virtual DbSet<par_TipoImballo> par_TipoImballo { get; set; }
         public virtual DbSet<rfid_global> rfid_global { get; set; }
         public virtual DbSet<rfid_global_error> rfid_global_error { get; set; }
         public virtual DbSet<stato_ordini_001> stato_ordini_001 { get; set; }
@@ -80,6 +81,7 @@ namespace MovInfoService_CMD.MODEL
         public virtual DbSet<C_mov_LabelParams_obsoleta> C_mov_LabelParams_obsoleta { get; set; }
         public virtual DbSet<logaut_udciningresso_storico> logaut_udciningresso_storico { get; set; }
         public virtual DbSet<mac_tipo_evento> mac_tipo_evento { get; set; }
+        public virtual DbSet<mov_PackagingInfo> mov_PackagingInfo { get; set; }
         public virtual DbSet<mov_UDCLoadLocationRequest> mov_UDCLoadLocationRequest { get; set; }
         public virtual DbSet<mov_UDCQtyChangeEvents> mov_UDCQtyChangeEvents { get; set; }
         public virtual DbSet<par_tblprojectdefaultparameters> par_tblprojectdefaultparameters { get; set; }
@@ -89,6 +91,7 @@ namespace MovInfoService_CMD.MODEL
         public virtual DbSet<InfoService_vw_Destinazione> InfoService_vw_Destinazione { get; set; }
         public virtual DbSet<mac_consumi_001_view> mac_consumi_001_view { get; set; }
         public virtual DbSet<mac_eventi_001_view> mac_eventi_001_view { get; set; }
+        public virtual DbSet<vw_AnagArticoli> vw_AnagArticoli { get; set; }
         public virtual DbSet<vw_cvm_sez_todo_001> vw_cvm_sez_todo_001 { get; set; }
         public virtual DbSet<vw_LabelData> vw_LabelData { get; set; }
         public virtual DbSet<vw_mac_consumi_001_WIP> vw_mac_consumi_001_WIP { get; set; }
@@ -105,7 +108,10 @@ namespace MovInfoService_CMD.MODEL
         public virtual DbSet<vw_mov_UDCDetailDestinationGroup> vw_mov_UDCDetailDestinationGroup { get; set; }
         public virtual DbSet<vw_mov_UDCMagDetail> vw_mov_UDCMagDetail { get; set; }
         public virtual DbSet<vw_mov_UDCQuantity> vw_mov_UDCQuantity { get; set; }
+        public virtual DbSet<vw_parameters_IMBA> vw_parameters_IMBA { get; set; }
+        public virtual DbSet<vw_parameters_IMBA_TODELETE> vw_parameters_IMBA_TODELETE { get; set; }
         public virtual DbSet<vw_ProduzioniCalandra> vw_ProduzioniCalandra { get; set; }
+        public virtual DbSet<vw_ProduzioniImballo> vw_ProduzioniImballo { get; set; }
         public virtual DbSet<vw_ProduzioniLevigatrice> vw_ProduzioniLevigatrice { get; set; }
         public virtual DbSet<vw_ProduzioniSezionatrice1> vw_ProduzioniSezionatrice1 { get; set; }
 
@@ -120,7 +126,23 @@ namespace MovInfoService_CMD.MODEL
                 .IsUnicode(false);
 
             modelBuilder.Entity<anag_articoli>()
+                .Property(e => e.strDesProd)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<anag_articoli>()
                 .Property(e => e.peso)
+                .HasPrecision(18, 3);
+
+            modelBuilder.Entity<anag_articoli>()
+                .Property(e => e.lunghezza)
+                .HasPrecision(18, 3);
+
+            modelBuilder.Entity<anag_articoli>()
+                .Property(e => e.larghezza)
+                .HasPrecision(18, 3);
+
+            modelBuilder.Entity<anag_articoli>()
+                .Property(e => e.spessore)
                 .HasPrecision(18, 3);
 
             modelBuilder.Entity<anag_macchine>()
@@ -634,6 +656,166 @@ namespace MovInfoService_CMD.MODEL
                 .IsFixedLength();
 
             modelBuilder.Entity<mov_Label>()
+                .Property(e => e.ngtechinfo01)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<mov_Label>()
+                .Property(e => e.ngtechinfo02)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<mov_Label>()
+                .Property(e => e.ngtechinfo03)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<mov_Label>()
+                .Property(e => e.ngtechinfo04)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<mov_Label>()
+                .Property(e => e.ngtechinfo05)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<mov_Label>()
+                .Property(e => e.ngtechinfo06)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<mov_Label>()
+                .Property(e => e.ngtechinfo07)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<mov_Label>()
+                .Property(e => e.ngtechinfo08)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<mov_Label>()
+                .Property(e => e.ngtechinfo09)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<mov_Label>()
+                .Property(e => e.ngtechinfo10)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<mov_Label>()
+                .Property(e => e.ngtechinfo11)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<mov_Label>()
+                .Property(e => e.ngtechinfo12)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<mov_Label>()
+                .Property(e => e.ngtechinfo13)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<mov_Label>()
+                .Property(e => e.ngtechinfo14)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<mov_Label>()
+                .Property(e => e.ngtechinfo15)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<mov_Label>()
+                .Property(e => e.ngtechinfo16)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<mov_Label>()
+                .Property(e => e.ngtechinfo17)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<mov_Label>()
+                .Property(e => e.ngtechinfo18)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<mov_Label>()
+                .Property(e => e.ngtechinfo19)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<mov_Label>()
+                .Property(e => e.ngtechinfo20)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<mov_Label>()
+                .Property(e => e.ngtechinfo21)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<mov_Label>()
+                .Property(e => e.ngtechinfo22)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<mov_Label>()
+                .Property(e => e.ngtechinfo23)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<mov_Label>()
+                .Property(e => e.ngtechinfo24)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<mov_Label>()
+                .Property(e => e.ngtechinfo25)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<mov_Label>()
+                .Property(e => e.ngtechinfo26)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<mov_Label>()
+                .Property(e => e.ngtechinfo27)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<mov_Label>()
+                .Property(e => e.ngtechinfo29)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<mov_Label>()
+                .Property(e => e.ngtechinfo30)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<mov_Label>()
+                .Property(e => e.ngtechinfo31)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<mov_Label>()
+                .Property(e => e.ngtechinfo32)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<mov_Label>()
+                .Property(e => e.ngtechinfo33)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<mov_Label>()
+                .Property(e => e.ngtechinfo34)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<mov_Label>()
+                .Property(e => e.ngtechinfo35)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<mov_Label>()
+                .Property(e => e.ngtechinfo36)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<mov_Label>()
+                .Property(e => e.ngtechinfo37)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<mov_Label>()
+                .Property(e => e.ngtechinfo38)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<mov_Label>()
+                .Property(e => e.ngtechinfo39)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<mov_Label>()
+                .Property(e => e.ngtechinfo40)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<mov_Label>()
+                .Property(e => e.ngtechinfo28)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<mov_Label>()
                 .HasMany(e => e.tb_LabelPrinterSpooler)
                 .WithRequired(e => e.mov_Label)
                 .WillCascadeOnDelete(false);
@@ -700,6 +882,14 @@ namespace MovInfoService_CMD.MODEL
                 .Property(e => e.extrainfo)
                 .IsUnicode(false);
 
+            modelBuilder.Entity<mov_Tracking_udc>()
+                .Property(e => e.Destination)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<mov_Tracking_udc>()
+                .Property(e => e.OriginalDestination)
+                .IsUnicode(false);
+
             modelBuilder.Entity<mov_UDCDetail>()
                 .Property(e => e.ItemCode)
                 .IsFixedLength();
@@ -724,6 +914,10 @@ namespace MovInfoService_CMD.MODEL
 
             modelBuilder.Entity<mov_UDCDetail>()
                 .Property(e => e.OriginalDestination)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<mov_UDCDetail>()
+                .Property(e => e.Gruppo)
                 .IsUnicode(false);
 
             modelBuilder.Entity<mov_UDCMagDetail>()
@@ -1411,6 +1605,11 @@ namespace MovInfoService_CMD.MODEL
                 .Property(e => e.MovableChipperPosition)
                 .HasPrecision(18, 6);
 
+            modelBuilder.Entity<par_TipoImballo>()
+                .Property(e => e.tipocolla)
+                .IsFixedLength()
+                .IsUnicode(false);
+
             modelBuilder.Entity<rfid_global>()
                 .Property(e => e.ID_Ola)
                 .IsUnicode(false);
@@ -1449,6 +1648,10 @@ namespace MovInfoService_CMD.MODEL
 
             modelBuilder.Entity<tb_LabelPrinterSpooler>()
                 .Property(e => e.PrinterName)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<tb_LabelPrinterSpooler>()
+                .Property(e => e.LastError)
                 .IsUnicode(false);
 
             modelBuilder.Entity<tb_LabelPrinterSpooler>()
@@ -1799,6 +2002,14 @@ namespace MovInfoService_CMD.MODEL
                 .Property(e => e.descr_evento)
                 .IsUnicode(false);
 
+            modelBuilder.Entity<mov_PackagingInfo>()
+                .Property(e => e.TipoImballo)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<mov_PackagingInfo>()
+                .Property(e => e.ItemCode)
+                .IsUnicode(false);
+
             modelBuilder.Entity<mov_UDCQtyChangeEvents>()
                 .Property(e => e.KeyCode)
                 .IsFixedLength();
@@ -1907,6 +2118,30 @@ namespace MovInfoService_CMD.MODEL
                 .Property(e => e.dtDateOfEvent)
                 .HasPrecision(0);
 
+            modelBuilder.Entity<vw_AnagArticoli>()
+                .Property(e => e.strCodProd)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<vw_AnagArticoli>()
+                .Property(e => e.strDesProd)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<vw_AnagArticoli>()
+                .Property(e => e.pesoUni)
+                .HasPrecision(18, 3);
+
+            modelBuilder.Entity<vw_AnagArticoli>()
+                .Property(e => e.lunghezza)
+                .HasPrecision(18, 3);
+
+            modelBuilder.Entity<vw_AnagArticoli>()
+                .Property(e => e.larghezza)
+                .HasPrecision(18, 3);
+
+            modelBuilder.Entity<vw_AnagArticoli>()
+                .Property(e => e.spessore)
+                .HasPrecision(18, 3);
+
             modelBuilder.Entity<vw_cvm_sez_todo_001>()
                 .Property(e => e.ID_Ola)
                 .IsUnicode(false);
@@ -2003,6 +2238,154 @@ namespace MovInfoService_CMD.MODEL
                 .Property(e => e.C19)
                 .IsFixedLength();
 
+            modelBuilder.Entity<vw_LabelData>()
+                .Property(e => e.C34)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<vw_LabelData>()
+                .Property(e => e.C35)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<vw_LabelData>()
+                .Property(e => e.C36)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<vw_LabelData>()
+                .Property(e => e.C37)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<vw_LabelData>()
+                .Property(e => e.C38)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<vw_LabelData>()
+                .Property(e => e.C39)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<vw_LabelData>()
+                .Property(e => e.C40)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<vw_LabelData>()
+                .Property(e => e.C41)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<vw_LabelData>()
+                .Property(e => e.C42)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<vw_LabelData>()
+                .Property(e => e.C43)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<vw_LabelData>()
+                .Property(e => e.C44)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<vw_LabelData>()
+                .Property(e => e.C45)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<vw_LabelData>()
+                .Property(e => e.C46)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<vw_LabelData>()
+                .Property(e => e.C47)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<vw_LabelData>()
+                .Property(e => e.C48)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<vw_LabelData>()
+                .Property(e => e.C49)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<vw_LabelData>()
+                .Property(e => e.C50)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<vw_LabelData>()
+                .Property(e => e.C51)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<vw_LabelData>()
+                .Property(e => e.C52)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<vw_LabelData>()
+                .Property(e => e.C53)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<vw_LabelData>()
+                .Property(e => e.C54)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<vw_LabelData>()
+                .Property(e => e.C55)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<vw_LabelData>()
+                .Property(e => e.C56)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<vw_LabelData>()
+                .Property(e => e.C57)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<vw_LabelData>()
+                .Property(e => e.C58)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<vw_LabelData>()
+                .Property(e => e.C59)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<vw_LabelData>()
+                .Property(e => e.C60)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<vw_LabelData>()
+                .Property(e => e.C61)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<vw_LabelData>()
+                .Property(e => e.C62)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<vw_LabelData>()
+                .Property(e => e.C63)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<vw_LabelData>()
+                .Property(e => e.C64)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<vw_LabelData>()
+                .Property(e => e.C65)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<vw_LabelData>()
+                .Property(e => e.C66)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<vw_LabelData>()
+                .Property(e => e.C67)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<vw_LabelData>()
+                .Property(e => e.C68)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<vw_LabelData>()
+                .Property(e => e.C69)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<vw_LabelData>()
+                .Property(e => e.C70)
+                .IsUnicode(false);
+
             modelBuilder.Entity<vw_mac_consumi_001_WIP>()
                 .Property(e => e.ID_OLA)
                 .IsUnicode(false);
@@ -2024,10 +2407,6 @@ namespace MovInfoService_CMD.MODEL
                 .Property(e => e.UnitWeight)
                 .HasPrecision(18, 3);
 
-            modelBuilder.Entity<vw_mov_DestinationPackaging>()
-                .Property(e => e.ItemCode)
-                .IsFixedLength();
-
             modelBuilder.Entity<vw_mov_Destinationstatus>()
                 .Property(e => e.DestinationCodeCVM)
                 .IsFixedLength();
@@ -2046,6 +2425,10 @@ namespace MovInfoService_CMD.MODEL
 
             modelBuilder.Entity<vw_mov_SlotOccupatiDettaglio>()
                 .Property(e => e.key_gene)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<vw_mov_SlotOccupatiDettaglio>()
+                .Property(e => e.pos_attuale)
                 .IsUnicode(false);
 
             modelBuilder.Entity<vw_mov_UDCDetailDestinationGroup>()
@@ -2081,6 +2464,10 @@ namespace MovInfoService_CMD.MODEL
             modelBuilder.Entity<vw_mov_UDCDetailDestinationGroup>()
                 .Property(e => e.PesoUnitario)
                 .HasPrecision(18, 3);
+
+            modelBuilder.Entity<vw_mov_UDCDetailDestinationGroup>()
+                .Property(e => e.Gruppo)
+                .IsUnicode(false);
 
             modelBuilder.Entity<vw_mov_UDCMagDetail>()
                 .Property(e => e.trackingcode)
@@ -2119,11 +2506,70 @@ namespace MovInfoService_CMD.MODEL
                 .Property(e => e.KeyCode)
                 .IsFixedLength();
 
+            modelBuilder.Entity<vw_parameters_IMBA>()
+                .Property(e => e.trackingcode)
+                .IsFixedLength()
+                .IsUnicode(false);
+
+            modelBuilder.Entity<vw_parameters_IMBA>()
+                .Property(e => e.ItemCode)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<vw_parameters_IMBA>()
+                .Property(e => e.ItemDescription)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<vw_parameters_IMBA>()
+                .Property(e => e.ItemCodeLenght)
+                .HasPrecision(18, 3);
+
+            modelBuilder.Entity<vw_parameters_IMBA>()
+                .Property(e => e.ItemCodeWidth)
+                .HasPrecision(18, 3);
+
+            modelBuilder.Entity<vw_parameters_IMBA>()
+                .Property(e => e.ItemCodeThickness)
+                .HasPrecision(18, 3);
+
+            modelBuilder.Entity<vw_parameters_IMBA>()
+                .Property(e => e.ItemCodeWeight)
+                .HasPrecision(18, 3);
+
+            modelBuilder.Entity<vw_parameters_IMBA>()
+                .Property(e => e.tipocolla)
+                .IsFixedLength()
+                .IsUnicode(false);
+
+            modelBuilder.Entity<vw_parameters_IMBA_TODELETE>()
+                .Property(e => e.LarghArticolo)
+                .HasPrecision(18, 3);
+
+            modelBuilder.Entity<vw_parameters_IMBA_TODELETE>()
+                .Property(e => e.LunghArticolo)
+                .HasPrecision(18, 3);
+
+            modelBuilder.Entity<vw_parameters_IMBA_TODELETE>()
+                .Property(e => e.SpessoreArticolo)
+                .HasPrecision(18, 3);
+
+            modelBuilder.Entity<vw_parameters_IMBA_TODELETE>()
+                .Property(e => e.tipocolla)
+                .IsFixedLength()
+                .IsUnicode(false);
+
             modelBuilder.Entity<vw_ProduzioniCalandra>()
                 .Property(e => e.ItemUnitWeigth)
                 .HasPrecision(18, 3);
 
             modelBuilder.Entity<vw_ProduzioniCalandra>()
+                .Property(e => e.MaterialUnitWeigth)
+                .HasPrecision(18, 3);
+
+            modelBuilder.Entity<vw_ProduzioniImballo>()
+                .Property(e => e.ItemUnitWeigth)
+                .HasPrecision(18, 3);
+
+            modelBuilder.Entity<vw_ProduzioniImballo>()
                 .Property(e => e.MaterialUnitWeigth)
                 .HasPrecision(18, 3);
 

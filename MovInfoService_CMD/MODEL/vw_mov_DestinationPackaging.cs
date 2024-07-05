@@ -18,7 +18,7 @@ namespace MovInfoService_CMD.MODEL
         [Column(TypeName = "numeric")]
         public decimal UnitWeight { get; set; }
 
-        [StringLength(10)]
+        [StringLength(50)]
         public string Destination { get; set; }
 
         public int? Qty { get; set; }
@@ -33,5 +33,8 @@ namespace MovInfoService_CMD.MODEL
         public int? ErpRigaPianoCaricoID { get; set; }
 
         public int? ManualExtractionId { get; set; }
+
+        [StringLength(10)]
+        public string Origin { get; set; }
     }
 }

@@ -111,6 +111,7 @@
     <Compile Include="MODEL\mov_DestinationStatus.cs" />
     <Compile Include="MODEL\mov_Label.cs" />
     <Compile Include="MODEL\mov_LabelType.cs" />
+    <Compile Include="MODEL\mov_PackagingInfo.cs" />
     <Compile Include="MODEL\mov_PhaseMaterials.cs" />
     <Compile Include="MODEL\mov_Phases.cs" />
     <Compile Include="MODEL\mov_ProductionOrders.cs" />
@@ -129,6 +130,7 @@
     <Compile Include="MODEL\par_tblparameterscode.cs" />
     <Compile Include="MODEL\par_tblproject.cs" />
     <Compile Include="MODEL\par_tblprojectdefaultparameters.cs" />
+    <Compile Include="MODEL\par_TipoImballo.cs" />
     <Compile Include="MODEL\rfid_global.cs" />
     <Compile Include="MODEL\rfid_global_error.cs" />
     <Compile Include="MODEL\stato_ordini_001.cs" />
@@ -147,6 +149,7 @@
     <Compile Include="MODEL\tbludcexit.cs" />
     <Compile Include="MODEL\tbludcproduce.cs" />
     <Compile Include="MODEL\tb_LabelPrinterSpooler.cs" />
+    <Compile Include="MODEL\vw_AnagArticoli.cs" />
     <Compile Include="MODEL\vw_cvm_sez_todo_001.cs" />
     <Compile Include="MODEL\vw_LabelData.cs" />
     <Compile Include="MODEL\vw_mac_consumi_001_WIP.cs" />
@@ -163,7 +166,10 @@
     <Compile Include="MODEL\vw_mov_UDCDetailDestinationGroup.cs" />
     <Compile Include="MODEL\vw_mov_UDCMagDetail.cs" />
     <Compile Include="MODEL\vw_mov_UDCQuantity.cs" />
+    <Compile Include="MODEL\vw_parameters_IMBA.cs" />
+    <Compile Include="MODEL\vw_parameters_IMBA_TODELETE.cs" />
     <Compile Include="MODEL\vw_ProduzioniCalandra.cs" />
+    <Compile Include="MODEL\vw_ProduzioniImballo.cs" />
     <Compile Include="MODEL\vw_ProduzioniLevigatrice.cs" />
     <Compile Include="MODEL\vw_ProduzioniSezionatrice1.cs" />
     <Compile Include="Program.cs" />

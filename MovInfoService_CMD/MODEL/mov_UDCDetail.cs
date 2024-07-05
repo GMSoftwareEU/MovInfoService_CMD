@@ -78,5 +78,12 @@ namespace MovInfoService_CMD.MODEL
         public DateTime? DtProcessingDateDestination { get; set; }
 
         public bool? flmagudcdetail { get; set; }
+
+        public int? IdDettUDCOrder { get; set; }
+
+        public int? ManualExtractionId { get; set; }
+
+        [StringLength(5)]
+        public string Gruppo { get; set; }
     }
 }

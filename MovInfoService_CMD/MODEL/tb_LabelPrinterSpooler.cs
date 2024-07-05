@@ -21,6 +21,8 @@ namespace MovInfoService_CMD.MODEL
         [StringLength(20)]
         public string PrinterName { get; set; }
 
+        public string LastError { get; set; }
+
         public virtual mov_Label mov_Label { get; set; }
 
         public virtual tb_LabelPrinterSpooler tb_LabelPrinterSpooler1 { get; set; }

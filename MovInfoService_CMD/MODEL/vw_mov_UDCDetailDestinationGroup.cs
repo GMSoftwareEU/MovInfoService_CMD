@@ -103,5 +103,8 @@ namespace MovInfoService_CMD.MODEL
         public string LocationCodeR1C { get; set; }
 
         public int? ManualExtractionId { get; set; }
+
+        [StringLength(5)]
+        public string Gruppo { get; set; }
     }
 }

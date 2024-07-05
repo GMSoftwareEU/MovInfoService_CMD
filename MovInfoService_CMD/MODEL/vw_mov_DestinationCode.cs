@@ -10,7 +10,7 @@ namespace MovInfoService_CMD.MODEL
     {
         [Key]
         [Column(Order = 0)]
-        [StringLength(5)]
+        [StringLength(8)]
         public string DestinationCode { get; set; }
 
         [Key]

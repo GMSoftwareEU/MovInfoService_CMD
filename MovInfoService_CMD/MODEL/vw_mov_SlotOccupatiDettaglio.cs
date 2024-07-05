@@ -32,5 +32,10 @@ namespace MovInfoService_CMD.MODEL
         [Column(Order = 3)]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int riga { get; set; }
+
+        [Key]
+        [Column(Order = 4)]
+        [StringLength(50)]
+        public string pos_attuale { get; set; }
     }
 }

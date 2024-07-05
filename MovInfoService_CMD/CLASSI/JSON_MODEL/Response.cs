@@ -32,6 +32,7 @@ namespace MovInfoService_CMD.CLASSI.JSON_MODEL
         public int? PalletQty { get; set; }
         public int? StackQty { get; set; }
         public string ErpCodicePallet { get; set; }
+        public string Gruppo { get; set; }
         public bool Transfer { get; set; }
         public object Errore { get; set; }
         //public string TipoImballo { get; set; }

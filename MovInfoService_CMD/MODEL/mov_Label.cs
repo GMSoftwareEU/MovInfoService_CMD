@@ -104,6 +104,126 @@ namespace MovInfoService_CMD.MODEL
 
         public DateTime? dtInsertDate { get; set; }
 
+        [StringLength(100)]
+        public string ngtechinfo01 { get; set; }
+
+        [StringLength(100)]
+        public string ngtechinfo02 { get; set; }
+
+        [StringLength(100)]
+        public string ngtechinfo03 { get; set; }
+
+        [StringLength(100)]
+        public string ngtechinfo04 { get; set; }
+
+        [StringLength(100)]
+        public string ngtechinfo05 { get; set; }
+
+        [StringLength(100)]
+        public string ngtechinfo06 { get; set; }
+
+        [StringLength(100)]
+        public string ngtechinfo07 { get; set; }
+
+        [StringLength(100)]
+        public string ngtechinfo08 { get; set; }
+
+        [StringLength(100)]
+        public string ngtechinfo09 { get; set; }
+
+        [StringLength(100)]
+        public string ngtechinfo10 { get; set; }
+
+        [StringLength(100)]
+        public string ngtechinfo11 { get; set; }
+
+        [StringLength(100)]
+        public string ngtechinfo12 { get; set; }
+
+        [StringLength(100)]
+        public string ngtechinfo13 { get; set; }
+
+        [StringLength(100)]
+        public string ngtechinfo14 { get; set; }
+
+        [StringLength(100)]
+        public string ngtechinfo15 { get; set; }
+
+        [StringLength(100)]
+        public string ngtechinfo16 { get; set; }
+
+        [StringLength(100)]
+        public string ngtechinfo17 { get; set; }
+
+        [StringLength(100)]
+        public string ngtechinfo18 { get; set; }
+
+        [StringLength(100)]
+        public string ngtechinfo19 { get; set; }
+
+        [StringLength(100)]
+        public string ngtechinfo20 { get; set; }
+
+        [StringLength(100)]
+        public string ngtechinfo21 { get; set; }
+
+        [StringLength(100)]
+        public string ngtechinfo22 { get; set; }
+
+        [StringLength(100)]
+        public string ngtechinfo23 { get; set; }
+
+        [StringLength(100)]
+        public string ngtechinfo24 { get; set; }
+
+        [StringLength(100)]
+        public string ngtechinfo25 { get; set; }
+
+        [StringLength(100)]
+        public string ngtechinfo26 { get; set; }
+
+        [StringLength(100)]
+        public string ngtechinfo27 { get; set; }
+
+        [StringLength(100)]
+        public string ngtechinfo29 { get; set; }
+
+        [StringLength(100)]
+        public string ngtechinfo30 { get; set; }
+
+        [StringLength(100)]
+        public string ngtechinfo31 { get; set; }
+
+        [StringLength(100)]
+        public string ngtechinfo32 { get; set; }
+
+        [StringLength(100)]
+        public string ngtechinfo33 { get; set; }
+
+        [StringLength(100)]
+        public string ngtechinfo34 { get; set; }
+
+        [StringLength(100)]
+        public string ngtechinfo35 { get; set; }
+
+        [StringLength(100)]
+        public string ngtechinfo36 { get; set; }
+
+        [StringLength(100)]
+        public string ngtechinfo37 { get; set; }
+
+        [StringLength(100)]
+        public string ngtechinfo38 { get; set; }
+
+        [StringLength(100)]
+        public string ngtechinfo39 { get; set; }
+
+        [StringLength(100)]
+        public string ngtechinfo40 { get; set; }
+
+        [StringLength(100)]
+        public string ngtechinfo28 { get; set; }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tb_LabelPrinterSpooler> tb_LabelPrinterSpooler { get; set; }
     }

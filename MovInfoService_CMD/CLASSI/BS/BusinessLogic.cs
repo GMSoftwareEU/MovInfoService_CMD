@@ -66,8 +66,10 @@ namespace MovInfoService.CLASSI.NGTEC.BS
                     resp.UDC = MovUDCDet.UDCCode;
                     resp.RFID = MovUDCDet.rfidApplicato;
                     resp.TrackingCode = req.ContenutoPila.TrackingCode;
-                    resp.PalletQty = MovUDCDet.Qty;                                             
+                    resp.PalletQty = MovUDCDet.Qty;
+                    resp.StackQty = MovUDCDet.StackQty;
                     resp.ErpCodicePallet = MovUDCDet.ErpCodicePallet;
+                    resp.Gruppo = MovUDCDet.Gruppo;
                     resp.Transfer = false;
                     resp.Errore = null;
 
@@ -132,7 +134,9 @@ namespace MovInfoService.CLASSI.NGTEC.BS
                             resp.RFID = null;
                             resp.TrackingCode = null;
                             resp.PalletQty = null;
+                            resp.StackQty = null;
                             resp.ErpCodicePallet = null;
+                            resp.Gruppo = null;
                             resp.Transfer = false;
                             resp.Errore = null;
                             json = JsonConvert.SerializeObject(resp);
@@ -160,7 +164,9 @@ namespace MovInfoService.CLASSI.NGTEC.BS
                             resp.RFID = null;
                             resp.TrackingCode = null;
                             resp.PalletQty = null;
+                            resp.StackQty = null;
                             resp.ErpCodicePallet = null;
+                            resp.Gruppo = null;
                             resp.Transfer = false;
                             resp.Errore = null;
                             json = JsonConvert.SerializeObject(resp);
@@ -208,7 +214,9 @@ namespace MovInfoService.CLASSI.NGTEC.BS
                             resp.RFID = null;
                             resp.TrackingCode = null;
                             resp.PalletQty = null;
+                            resp.StackQty = null;
                             resp.ErpCodicePallet = null;
+                            resp.Gruppo = null;
                             resp.Transfer = false;
                             resp.Errore = null;
                             json = JsonConvert.SerializeObject(resp);
@@ -250,7 +258,9 @@ namespace MovInfoService.CLASSI.NGTEC.BS
                             resp.RFID = null;
                             resp.TrackingCode = req.ContenutoPila.TrackingCode;
                             resp.PalletQty = null;
+                            resp.StackQty = MovUDCDet.StackQty;
                             resp.ErpCodicePallet = null;
+                            resp.Gruppo = MovUDCDet.Gruppo;
                             resp.Transfer = false;
                             resp.Errore = null;
                             json = JsonConvert.SerializeObject(resp);
@@ -324,8 +334,10 @@ namespace MovInfoService.CLASSI.NGTEC.BS
                             resp.UDC = MagDetail.UDCCode;
                             resp.RFID = null;
                             resp.TrackingCode = MagDetail.trackingcode;
-                            resp.PalletQty = MagDetail.Qty;                    // In questo caso metto uguale a num pezzi perchè siamo in fondo alla rulliera 1C                               
+                            resp.PalletQty = MagDetail.Qty;                    // In questo caso metto uguale a num pezzi perchè siamo in fondo alla rulliera 1C
+                            resp.StackQty = null;                                                       
                             resp.ErpCodicePallet = MagDetail.ErpCodicePallet;
+                            resp.Gruppo = null;
                             resp.Transfer = false;
                             resp.Errore = null;
                             json = JsonConvert.SerializeObject(resp);
@@ -393,8 +405,10 @@ namespace MovInfoService.CLASSI.NGTEC.BS
                         resp.TrackingCode = req.ContenutoPila.TrackingCode;
                         resp.PalletQty = destPacking.Qty;
                         resp.PalletQty = null;
+                        resp.StackQty = null;
                         resp.StackQty = destPacking.StackQty;
                         resp.ErpCodicePallet = null;
+                        resp.Gruppo = null;
                         resp.Transfer = false;
                         resp.Errore = null;
 
@@ -434,7 +448,9 @@ namespace MovInfoService.CLASSI.NGTEC.BS
                         resp.RFID = null;
                         resp.TrackingCode = req.ContenutoPila.TrackingCode;
                         resp.PalletQty = req.ContenutoPila.NumPezzi;
+                        resp.StackQty = null;
                         resp.ErpCodicePallet = null;
+                        resp.Gruppo = null;
                         resp.Transfer = false;
                         resp.Errore = null;
 
@@ -492,8 +508,10 @@ namespace MovInfoService.CLASSI.NGTEC.BS
                 resp.UDC = null;
                 resp.RFID = null;
                 resp.TrackingCode = req.ContenutoPila.TrackingCode;
-                resp.PalletQty = GetQty4Pallet(req.ContenutoPila.ErpOrderId, req.PosizioneAttuale, req.ContenutoPila.NumPezzi);                                             
+                resp.PalletQty = GetQty4Pallet(req.ContenutoPila.ErpOrderId, req.PosizioneAttuale, req.ContenutoPila.NumPezzi);
+                resp.StackQty = null;
                 resp.ErpCodicePallet = null; 
+                resp.Gruppo = null; 
                 resp.Transfer = false;
                 resp.Errore = null;
 
@@ -535,7 +553,9 @@ namespace MovInfoService.CLASSI.NGTEC.BS
                     resp.RFID = null;
                     resp.TrackingCode = req.ContenutoPila.TrackingCode;
                     resp.PalletQty = req.ContenutoPila.NumPezzi;
+                    resp.StackQty = null;
                     resp.ErpCodicePallet = null; 
+                    resp.Gruppo = null; 
                     resp.Transfer = false;
                     resp.Errore = null;
 
@@ -602,7 +622,9 @@ namespace MovInfoService.CLASSI.NGTEC.BS
                         resp.RFID = MovUDCDet.rfidApplicato;
                         resp.TrackingCode = trackingCode;
                         resp.PalletQty = MovUDCDet.Qty;                                  // In questo caso metto uguale a num pezzi perchè siamo in fondo alla rulliera 1C             
+                        resp.StackQty = MovUDCDet.StackQty;
                         resp.ErpCodicePallet = MovUDCDet.ErpCodicePallet;
+                        resp.Gruppo = MovUDCDet.Gruppo;
                         resp.Transfer = false;
                         resp.Errore = null;
                         json = JsonConvert.SerializeObject(resp);
@@ -651,7 +673,9 @@ namespace MovInfoService.CLASSI.NGTEC.BS
                         resp.RFID = MovUDCDet.rfidApplicato;
                         resp.TrackingCode = MovUDCDet.trackingcode;
                         resp.PalletQty = MovUDCDet.Qty;                                    // In questo caso metto uguale a num pezzi perchè siamo in fondo alla rulliera 1C            
+                        resp.StackQty = MovUDCDet.StackQty;
                         resp.ErpCodicePallet = MovUDCDet.ErpCodicePallet;
+                        resp.Gruppo = MovUDCDet.Gruppo;
                         resp.Transfer = false;
                         resp.Errore = null;
                         json = JsonConvert.SerializeObject(resp);
@@ -744,6 +768,7 @@ namespace MovInfoService.CLASSI.NGTEC.BS
                                     resp.RFID = null;
                                     resp.TrackingCode = TrackingCode;
                                     resp.PalletQty = null;
+                                    resp.StackQty = null;
                                     resp.ErpCodicePallet = null;
                                     resp.Transfer = false;
                                     resp.Errore = "Scarico forzato a magazzino causato da CDL " + DestStatus.DestinationCode + " fuori servizio";

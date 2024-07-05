@@ -23,5 +23,13 @@ namespace MovInfoService_CMD.MODEL
         public string Destination { get; set; }
 
         public DateTime? DtProcessingDate { get; set; }
+
+        public int? ErpRigaPianoCaricoID { get; set; }
+
+        public int? ErpOrderId { get; set; }
+
+        public int? ErpManualExtractionId { get; set; }
+
+        public int? idDettUdc { get; set; }
     }
 }

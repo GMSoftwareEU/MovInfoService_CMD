@@ -37,5 +37,13 @@ namespace MovInfoService_CMD.MODEL
         public int? ErpRigaPianoCaricoID { get; set; }
 
         public bool? FlAckReceived { get; set; }
+
+        [StringLength(50)]
+        public string Destination { get; set; }
+
+        [StringLength(50)]
+        public string OriginalDestination { get; set; }
+
+        public int? ManualExtractionId { get; set; }
     }
 }

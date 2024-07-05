@@ -11,7 +11,7 @@ namespace MovInfoService_CMD.MODEL
         public int Id { get; set; }
 
         [Required]
-        [StringLength(5)]
+        [StringLength(8)]
         public string DestinationCode { get; set; }
 
         [Required]
@@ -43,6 +43,9 @@ namespace MovInfoService_CMD.MODEL
         public string DestinationCodeCVM { get; set; }
 
         public int? ErpLocationCVM { get; set; }
+
+        [StringLength(20)]
+        public string LocationCodeR1C { get; set; }
 
         public virtual mov_DestinationGroupCapacity mov_DestinationGroupCapacity { get; set; }
     }
